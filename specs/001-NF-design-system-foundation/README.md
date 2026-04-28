@@ -44,6 +44,31 @@ Establish a minimal design system foundation to ensure visual consistency, acces
 9. Configure Storybook for Vue + Vite and document reusable components with representative states.
 10. Use Phosphor icons in shareable component examples where iconography is needed.
 
+## DS Component Catalog
+
+### Priority 1 (in this spec)
+
+1. `Button`: variants (primary, secondary, ghost), sizes (sm, md, lg), icon slots, loading/disabled states.
+2. `Input`: text input base with label, helper/error text, optional left/right icon, and validation states.
+3. `Select`: single-select control using Radix Vue primitives, with label, placeholder, and error state.
+4. `Card`: neutral surface container with header/content/footer composition and optional interactive hover state.
+
+### Priority 2 (next slice after foundation)
+
+1. `Checkbox`: controlled/uncontrolled support, indeterminate state, label integration.
+2. `RadioGroup`: accessible grouped selection with orientation and validation states.
+3. `Switch`: boolean toggle with label/description and disabled state.
+4. `Badge`: semantic status and category chips for league and filter contexts.
+5. `Tag`: removable/filterable token for active filters.
+
+### Priority 3 (dependent on app growth)
+
+1. `Textarea`: multiline input aligned with Input tokens/states.
+2. `Dialog` / `Modal`: Radix-based overlay patterns and focus trapping.
+3. `Tooltip`: lightweight informational helper with keyboard-friendly trigger.
+4. `DropdownMenu`: contextual actions with keyboard navigation.
+5. `Tabs`: segmented content navigation with responsive behavior.
+
 ## Out of Scope
 
 1. Publishing Storybook externally in this phase.

@@ -7,9 +7,24 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependency directories
 node_modules
+
+# Build outputs
 dist
 dist-ssr
+storybook-static
+
+# TypeScript incremental build info
+*.tsbuildinfo
+
+# Test and tooling outputs
+coverage
+
+# Local environment files
+.env
+.env.*
+!.env.example
 *.local
 
 # Editor directories and files
