@@ -1,11 +1,13 @@
 # AGENTS Guide: `.agents/`
 
 ## Package Identity
+
 - `.agents/` stores AI skill definitions and reference materials used by coding agents.
 - This is operational guidance content, not application runtime code.
 - Changes here affect how agents plan, implement, and review work in this repo.
 
 ## Setup & Run
+
 - No standalone install; dependencies are managed at repository root.
 - Validate markdown integrity by opening updated files in the editor preview.
 - Check references and links quickly:
@@ -14,6 +16,8 @@
 - Validate lock context after skill changes: `rg -n "skills|skill" skills-lock.json README.md`
 
 ## Patterns & Conventions
+
+- Follow repository-wide standards from `CONVENTIONS.md` before `.agents/`-specific rules.
 - Keep each skill focused on one domain (Vue, Vite, testing, prompts, etc.).
 - Put canonical instructions in `SKILL.md`; keep deep examples in `references/`.
 - Prefer stable, explicit file names in references (feature-oriented naming).
@@ -30,6 +34,7 @@
 - ❌ DON'T: Treat `.agents/` as app code; avoid importing from this folder in `src/`.
 
 ## Touch Points / Key Files
+
 - Skills inventory lock: `skills-lock.json`
 - Vue implementation guidance: `.agents/skills/vue/SKILL.md`
 - Vue best-practices guidance: `.agents/skills/vue-best-practices/SKILL.md`
@@ -38,6 +43,7 @@
 - Prompt quality guidance: `.agents/skills/prompt-engineering/SKILL.md`
 
 ## JIT Index Hints
+
 - List skill entry files: `rg --files .agents/skills | rg "SKILL\\.md$"`
 - Find where a pattern is documented: `rg -n "Composition API|script setup|Vitest|Vite|pnpm" .agents/skills`
 - Find sync/generated metadata: `rg --files .agents/skills | rg "SYNC\\.md$|GENERATION\\.md$"`
@@ -45,9 +51,11 @@
 - Find duplicate guidance by phrase: `rg -n "ALWAYS|NEVER|Best Practices" .agents/skills`
 
 ## Common Gotchas
+
 - Some skills mirror external upstream docs; edits may need lock/sync follow-up.
 - Large reference corpora can bloat tokens; keep top-level `SKILL.md` concise.
 - If you add new commands, ensure they are valid in this repo (mostly `pnpm`).
 
 ## Pre-PR Checks
+
 - `rg -n "TODO|TBD|placeholder" .agents/skills && pnpm build`

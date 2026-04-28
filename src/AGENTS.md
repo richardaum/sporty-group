@@ -1,11 +1,13 @@
 # AGENTS Guide: `src/`
 
 ## Package Identity
+
 - `src/` contains the Vue single-page application code and global styles.
 - Framework: Vue 3 SFCs with TypeScript, built and served via Vite.
 - This folder should hold app logic; keep non-app instructions in `docs/`.
 
 ## Setup & Run
+
 - Install (from root): `pnpm install`
 - Dev server (HMR): `pnpm dev`
 - Production build + type-check: `pnpm build`
@@ -14,6 +16,8 @@
 - Tests for app code: `pnpm test` (add scripts before relying on this)
 
 ## Patterns & Conventions
+
+- Follow repository-wide standards from `CONVENTIONS.md` before package-specific rules.
 - File organization:
   - App entry: `src/main.ts`
   - Root component shell: `src/App.vue`
@@ -36,6 +40,7 @@
 - ❌ DON'T: Keep template/demo copy in production features (current starter copy in `src/components/HelloWorld.vue` is placeholder content).
 
 ## Touch Points / Key Files
+
 - App bootstrap: `src/main.ts`
 - Root layout composition: `src/App.vue`
 - Example component structure: `src/components/HelloWorld.vue`
@@ -44,6 +49,7 @@
 - TS app scope config: `tsconfig.app.json`
 
 ## JIT Index Hints
+
 - Find Vue SFC entry points: `rg -n "<script setup" src`
 - Find component imports/usage: `rg -n "import .*\\.vue|<HelloWorld" src`
 - Find reactive primitives: `rg -n "ref\\(|computed\\(|watch\\(" src`
@@ -52,10 +58,12 @@
 - Find static assets references: `rg -n "assets/|\\.svg|\\.png" src`
 
 ## Common Gotchas
+
 - `pnpm build` already runs type-checking (`vue-tsc -b`) before bundling.
 - `target="_blank"` links should include `rel="noopener noreferrer"` when you add or modify external links.
 - If you add new env-driven behavior, keep client-safe vars prefixed with `VITE_`.
 - Keep `src/style.css` readable; nested selectors are used heavily and can become hard to maintain.
 
 ## Pre-PR Checks
+
 - `pnpm exec vue-tsc -b && pnpm build`
