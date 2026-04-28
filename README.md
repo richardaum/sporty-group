@@ -7,11 +7,14 @@ It also serves as the delivery package for the recruiting process, including ass
 
 ## Tools Used
 
-- **Vue 3** for building the user interface with reactive components.
+- **Vue 3** for building the user interface with reactive components (despite my familiarity with React, I chose Vue to highlight my skills in the framework used by the company).
 - **TypeScript** for static typing and safer, more maintainable code.
 - **Vite** as the development server and build tool for fast feedback loops.
 - **Vue Router** for declarative client-side routing and navigation between views.
 - **TanStack Query (Vue Query)** for server-state fetching, caching, and synchronization.
+- **Radix Vue** as the base primitive layer for accessible interactive controls (currently applied to Select).
+- **@phosphor-icons/vue** for consistent iconography in reusable UI components and stories.
+- **Storybook** for shareable component previews and state documentation.
 - **ESLint** for static analysis and consistent code quality in JavaScript/TypeScript and Vue files.
 - **Prettier** for automated, consistent code formatting across the project.
 - **lint-staged** for running lint/format only on staged files during commits.

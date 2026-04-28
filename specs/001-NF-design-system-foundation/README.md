@@ -102,3 +102,14 @@ Establish a minimal design system foundation to ensure visual consistency, acces
 11. Storybook starts locally and includes stories for core shared primitives (`input`, `select`, `button`, `card`).
 12. Storybook stories consume the same token system as application styles.
 13. Phosphor icon library is installed and used in at least one shared component showcase.
+
+## Implementation Status
+
+1. Priority 1 components are implemented in `src/components/ui` with stories:
+   - `UIButton`: primary/secondary/ghost variants, `sm/md/lg` sizes, loading/disabled states, leading/trailing icon slots.
+   - `UIInput`: label, helper/error text, leading/trailing icon slots, validation states.
+   - `UISelect`: Radix Vue primitive composition with label, placeholder, disabled/error states.
+   - `UICard`: header/content/footer composition with optional interactive behavior.
+2. Storybook includes representative states for all four core components under `src/components/ui/*.stories.ts`.
+3. Tokenized light/dark themes and reduced-motion support are centralized in `src/style.css`.
+4. Phosphor icons are used in shared component stories and control surfaces.

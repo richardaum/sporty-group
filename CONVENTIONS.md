@@ -22,6 +22,13 @@
 - Keep root/view components focused on composition; move feature logic to components/composables.
 - Prefer explicit, typed props/emits contracts.
 
+## Styling Rules
+
+- Component-specific styles must live in the component itself (`<style>` in `.vue` files).
+- `src/style.css` is reserved for global styles, design tokens, resets, and shared utility patterns.
+- Component styles must reference global tokens from `src/style.css` (for example `var(--color-*)`, `var(--space-*)`, `var(--radius-*)`) instead of hardcoded repeated values.
+- When a visual value starts repeating across components, promote it to a token in `src/style.css` and consume it from component `<style>` blocks.
+
 ## Quality Gates
 
 - Lint before commit (`pnpm lint`).

@@ -22,6 +22,7 @@
 
 - Apply global standards from `CONVENTIONS.md`.
 - Use Vue 3 Composition API with `<script setup lang="ts">`.
+- Keep component-specific styles in each component `<style>` block; keep `src/style.css` for global styles and tokens.
 - Keep root guidance minimal; put area-specific detail in sub-folder guides.
 - Keep commands and docs aligned with actual scripts in `package.json`.
 - Prefer focused, reviewable changes with explicit verification notes.

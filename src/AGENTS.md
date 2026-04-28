@@ -27,16 +27,20 @@
 - Use Vue Composition API with `<script setup lang="ts">`.
 - Keep components focused; move reusable UI into `src/components/`.
 - Prefer explicit, accessible markup for interactive elements.
+- Keep component-specific styles inside each component `<style>` block.
+- Reference global tokens from `src/style.css` inside component styles (spacing, colors, radius, shadows, typography).
 
 - ✅ DO: Mount app via a thin bootstrap in `src/main.ts`.
 - ✅ DO: Keep root composition simple, as shown in `src/App.vue`.
 - ✅ DO: Define component-local reactive state using `ref`, as in `src/components/HelloWorld.vue`.
 - ✅ DO: Keep shared visual tokens in CSS variables in `src/style.css`.
+- ✅ DO: Keep component styling colocated in the component `<style>` block and consume shared tokens via `var(--token-name)`.
 - ✅ DO: Import assets directly in components (`import heroImg from '../assets/hero.png'`) as in `src/components/HelloWorld.vue`.
 
 - ❌ DON'T: Put business logic directly in `src/main.ts`; keep it as bootstrap-only.
 - ❌ DON'T: Use Options API patterns in new components when existing code uses `<script setup lang="ts">`.
 - ❌ DON'T: Hardcode duplicate color values in many selectors; extend variables in `src/style.css` instead.
+- ❌ DON'T: Place component-only selectors in `src/style.css`; keep them in the owning `.vue` file.
 - ❌ DON'T: Keep template/demo copy in production features (current starter copy in `src/components/HelloWorld.vue` is placeholder content).
 
 ## Touch Points / Key Files
