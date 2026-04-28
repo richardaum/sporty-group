@@ -30,7 +30,11 @@ withDefaults(
 <style scoped>
 .ui-card {
   border: 1px solid var(--color-border);
-  background: var(--color-bg-surface);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--color-bg-elevated) 88%, black),
+    var(--color-bg-surface)
+  );
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
   padding: var(--space-4);
@@ -57,15 +61,19 @@ withDefaults(
 
 .ui-card-interactive {
   transition:
-    border-color 140ms ease,
-    background-color 140ms ease,
-    box-shadow 140ms ease;
+    transform 200ms ease,
+    border-color 200ms ease,
+    box-shadow 200ms ease;
   cursor: pointer;
+  transform-origin: center;
 }
 
 .ui-card-interactive:hover {
   border-color: var(--color-border-strong);
-  box-shadow: 0 0 0 1px color-mix(in oklab, var(--color-border-strong) 35%, transparent);
+  transform: scale(1.02);
+  box-shadow:
+    0 10px 26px rgba(0, 0, 0, 0.45),
+    0 0 0 1px color-mix(in oklab, var(--color-border-strong) 55%, transparent);
 }
 
 .ui-card-interactive:focus-within {

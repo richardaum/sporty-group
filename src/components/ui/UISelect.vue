@@ -112,7 +112,7 @@ withDefaults(
   min-height: 2.75rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  background: var(--color-bg-surface);
+  background: color-mix(in oklab, var(--color-bg-elevated) 90%, black);
   color: var(--color-text-primary);
   font: inherit;
   padding: 0 var(--space-4) 0 var(--space-3);
@@ -129,6 +129,7 @@ withDefaults(
 
 .ui-select-trigger:hover {
   border-color: var(--color-border-strong);
+  background: var(--color-bg-elevated);
 }
 
 .ui-select-trigger:focus-visible {
@@ -147,7 +148,7 @@ withDefaults(
 }
 
 .ui-select-content {
-  background: var(--color-bg-surface);
+  background: var(--color-bg-elevated);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-soft);
@@ -163,7 +164,7 @@ withDefaults(
 }
 
 .ui-select-item[data-highlighted] {
-  background: var(--color-bg-subtle);
+  background: color-mix(in oklab, var(--color-brand-500) 18%, var(--color-bg-subtle));
 }
 
 .ui-select-message-error {

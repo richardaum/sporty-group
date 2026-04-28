@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap");
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
   --font-family-base: "Outfit", "Segoe UI", system-ui, -apple-system, sans-serif;
   --font-size-body: 1rem;
   --line-height-body: 1.5;
@@ -20,23 +20,24 @@
   --radius-lg: 0.625rem;
 
   --shadow-none: none;
-  --shadow-soft: 0 0 0 1px rgba(15, 23, 42, 0.06);
+  --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.45);
 
-  --color-bg-canvas: #f7f6f4;
-  --color-bg-surface: #ffffff;
-  --color-bg-subtle: #f1eeea;
-  --color-text-primary: #241f24;
-  --color-text-secondary: #4f4650;
-  --color-border: #d9d3d8;
-  --color-border-strong: #b7acb5;
-  --color-focus: #c1121f;
-  --color-error: #9f1239;
+  --color-bg-canvas: #000000;
+  --color-bg-surface: #141414;
+  --color-bg-elevated: #1f1f1f;
+  --color-bg-subtle: #262626;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #a3a3a3;
+  --color-border: #2b2b2b;
+  --color-border-strong: #3c3c3c;
+  --color-focus: #e50914;
+  --color-error: #ff6b6b;
 
-  --color-brand-50: #fef2f2;
-  --color-brand-100: #fde2e4;
-  --color-brand-500: #c1121f;
-  --color-brand-600: #a20f1a;
-  --color-brand-700: #7f1016;
+  --color-brand-50: #2e0b0d;
+  --color-brand-100: #4a0f13;
+  --color-brand-500: #e50914;
+  --color-brand-600: #f6121d;
+  --color-brand-700: #ff3f49;
 
   font-family: var(--font-family-base);
   font-size: var(--font-size-body);
@@ -46,48 +47,6 @@
   font-synthesis: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-    --color-bg-canvas: #191517;
-    --color-bg-surface: #211d20;
-    --color-bg-subtle: #282327;
-    --color-text-primary: #f3eef1;
-    --color-text-secondary: #c9bcc3;
-    --color-border: #473d45;
-    --color-border-strong: #5e5160;
-    --color-focus: #ff6b77;
-    --color-error: #fb7185;
-
-    --color-brand-50: #321319;
-    --color-brand-100: #43161e;
-    --color-brand-500: #ff5d6d;
-    --color-brand-600: #ff7684;
-    --color-brand-700: #ff99a3;
-    --shadow-soft: 0 0 0 1px rgba(255, 255, 255, 0.06);
-  }
-}
-
-[data-theme="dark"] {
-  color-scheme: dark;
-  --color-bg-canvas: #191517;
-  --color-bg-surface: #211d20;
-  --color-bg-subtle: #282327;
-  --color-text-primary: #f3eef1;
-  --color-text-secondary: #c9bcc3;
-  --color-border: #473d45;
-  --color-border-strong: #5e5160;
-  --color-focus: #ff6b77;
-  --color-error: #fb7185;
-
-  --color-brand-50: #321319;
-  --color-brand-100: #43161e;
-  --color-brand-500: #ff5d6d;
-  --color-brand-600: #ff7684;
-  --color-brand-700: #ff99a3;
-  --shadow-soft: 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 *,
@@ -105,97 +64,6 @@ body {
 
 #app {
   min-height: 100svh;
-}
-
-.app-shell {
-  width: min(100%, 44rem);
-  margin: 0 auto;
-  padding: var(--space-6) var(--space-4);
-  display: grid;
-  gap: var(--space-5);
-}
-
-.app-header {
-  display: grid;
-  gap: var(--space-2);
-}
-
-.kicker {
-  margin: 0;
-  color: var(--color-brand-600);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-size: 0.75rem;
-}
-
-.title {
-  margin: 0;
-  font-size: clamp(1.75rem, 4vw, 2.25rem);
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-}
-
-.title-sm {
-  margin: 0;
-  font-size: 1.125rem;
-  line-height: 1.3;
-}
-
-.subtitle {
-  margin: 0;
-  color: var(--color-text-secondary);
-  max-width: 60ch;
-}
-
-.controls-card {
-  padding: var(--space-4);
-  display: grid;
-  gap: var(--space-4);
-}
-
-.field {
-  display: grid;
-  gap: var(--space-2);
-}
-
-.field-label {
-  font-weight: 500;
-  color: var(--color-text-secondary);
-}
-
-.card-link {
-  color: var(--color-brand-600);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.card-link:hover {
-  color: var(--color-brand-700);
-}
-
-.button-row {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-3);
-}
-
-.home-card {
-  padding: var(--space-6);
-}
-
-.home-icon {
-  color: var(--color-brand-600);
-}
-
-@media (min-width: 48rem) {
-  .app-shell {
-    padding: var(--space-7) var(--space-5);
-  }
-
-  .button-row {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

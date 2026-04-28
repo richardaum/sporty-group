@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import HelloWorld from "./components/HelloWorld.vue";
+import LeaguesCatalog from "./components/leagues/LeaguesCatalog.vue";
 </script>
 
 <template>
-  <HelloWorld />
+  <LeaguesCatalog />
 </template>

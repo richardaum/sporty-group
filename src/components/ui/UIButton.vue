@@ -54,11 +54,12 @@ withDefaults(
   font: inherit;
   font-weight: 600;
   cursor: pointer;
-  color: var(--color-bg-surface);
+  color: #ffffff;
   transition:
-    background-color 140ms ease,
-    border-color 140ms ease,
-    color 140ms ease;
+    transform 180ms ease,
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -66,11 +67,16 @@ withDefaults(
 }
 
 .ui-button-primary {
-  background: var(--color-brand-500);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--color-brand-600) 82%, black),
+    var(--color-brand-500)
+  );
 }
 
 .ui-button-primary:hover {
   background: var(--color-brand-600);
+  transform: translateY(-1px);
 }
 
 .ui-button-primary:active {
@@ -78,7 +84,7 @@ withDefaults(
 }
 
 .ui-button-secondary {
-  background: var(--color-bg-surface);
+  background: color-mix(in oklab, var(--color-bg-elevated) 85%, black);
   color: var(--color-text-primary);
   border-color: var(--color-border);
 }
@@ -94,12 +100,12 @@ withDefaults(
 
 .ui-button-ghost {
   background: transparent;
-  color: var(--color-brand-700);
+  color: var(--color-text-primary);
   border-color: var(--color-brand-100);
 }
 
 .ui-button-ghost:hover {
-  background: var(--color-brand-100);
+  background: color-mix(in oklab, var(--color-brand-500) 20%, transparent);
 }
 
 .ui-button-sm {
@@ -144,6 +150,7 @@ withDefaults(
 .ui-button:disabled {
   cursor: not-allowed;
   opacity: 0.65;
+  transform: none;
   background: var(--color-bg-subtle);
 }
 

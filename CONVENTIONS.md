@@ -28,6 +28,21 @@
 - `src/style.css` is reserved for global styles, design tokens, resets, and shared utility patterns.
 - Component styles must reference global tokens from `src/style.css` (for example `var(--color-*)`, `var(--space-*)`, `var(--radius-*)`) instead of hardcoded repeated values.
 - When a visual value starts repeating across components, promote it to a token in `src/style.css` and consume it from component `<style>` blocks.
+- Do not rely on `:deep(...)` for routine component customization; prefer explicit extension points in the component API (for example props/variants or class hooks) and style those in the owning component.
+
+## Layout Alignment Rules
+
+- Use one horizontal reference container (`width: min(100%, <max-width>)` + `margin: 0 auto`).
+- Header and main content must share this same left/right alignment.
+- Put viewport breathing space in shell/wrapper padding, not by shifting inner sections.
+- Keep component spacing internal (card/body padding), without changing page edge alignment.
+
+## Alignment Exceptions
+
+- `UIRailTrack` is an indirect-alignment component: inherit outer alignment from parent; control only rail behavior (scroll/gap/card sizing/scrollbar).
+- Rails with intentional horizontal overflow may overflow locally, but must keep parent left/right edges aligned.
+- Decorative layers (hero overlay, skeleton, gradients) may add internal padding, not outer offset.
+- Any intentional alignment break must be documented inline with a short reason.
 
 ## Quality Gates
 
@@ -35,4 +50,5 @@
 - Type-check with TypeScript compiler (`pnpm exec tsc --noEmit` or project-equivalent `vue-tsc`).
 - Format with Prettier (`pnpm format`).
 - Build and type-check before merge (`pnpm build`).
+- Keep test coverage always increasing: new changes must maintain or improve current coverage (never decrease it).
 - When adding/changing core stack items, update `README.md` in the same change.
