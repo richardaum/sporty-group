@@ -57,4 +57,5 @@
 
 ## Pre-PR Checks
 
-- `rg -n "TODO|TBD|placeholder|lorem" docs README.md && pnpm build`
+- `rg -n "TODO|TBD|placeholder|lorem" docs README.md`
+- `pnpm build`

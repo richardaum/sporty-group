@@ -13,7 +13,7 @@
 - Production build + type-check: `pnpm build`
 - Type-check only: `pnpm exec vue-tsc -b`
 - Preview built app: `pnpm preview`
-- Tests for app code: `pnpm test` (add scripts before relying on this)
+- Lint app code: `pnpm lint`
 
 ## Patterns & Conventions
 
@@ -66,4 +66,6 @@
 
 ## Pre-PR Checks
 
-- `pnpm exec vue-tsc -b && pnpm build`
+- `pnpm lint`
+- `pnpm exec vue-tsc -b`
+- `pnpm build`

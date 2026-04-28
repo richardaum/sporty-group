@@ -58,4 +58,5 @@
 
 ## Pre-PR Checks
 
-- `rg -n "TODO|TBD|placeholder" .agents/skills && pnpm build`
+- `rg -n "TODO|TBD|placeholder" .agents/skills`
+- `pnpm build`

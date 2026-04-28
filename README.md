@@ -21,6 +21,7 @@ It also serves as the delivery package for the recruiting process, including ass
 
 ## Skills Used
 
+- [frontend-design](https://github.com/julianoczkowski/designer-skills/tree/main/frontend-design) - Build distinctive, production-grade frontend interfaces with high design quality and clear aesthetic direction.
 - [vue](https://github.com/antfu/skills/tree/main/skills/vue) - Vue 3 Composition API patterns and best practices.
 - [vue-best-practices](https://github.com/antfu/skills/tree/main/skills/vue-best-practices) - Guidance on Vue component structure and conventions.
 - [vue-testing-best-practices](https://github.com/antfu/skills/tree/main/skills/vue-testing-best-practices) - Robust Vue testing patterns with Vitest and Vue Test Utils.
