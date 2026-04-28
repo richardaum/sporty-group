@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "lean-spec": {
+      "args": ["-y", "@leanspec/mcp"],
+      "command": "npx"
+    }
+  }
+}
