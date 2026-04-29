@@ -11,6 +11,7 @@ export default defineConfig({
   },
   test: {
     environment: "jsdom",
+    globals: true,
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],
@@ -18,10 +19,10 @@ export default defineConfig({
       exclude: ["**/*.test.ts", "**/*.stories.ts"],
       thresholds: {
         autoUpdate: true,
-        lines: 82.26,
-        functions: 85.71,
-        branches: 69.23,
-        statements: 82.72,
+        lines: 85.99,
+        functions: 90.03,
+        branches: 75.52,
+        statements: 86.68,
       },
     },
   },
