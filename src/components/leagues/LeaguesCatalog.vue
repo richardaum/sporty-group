@@ -62,6 +62,11 @@ function onLeagueSelect(leagueId: string) {
   isBadgeLookupModalOpen.value = true;
 }
 
+function onSearchResultSelect(leagueId: string) {
+  closeSearchOverlay();
+  onLeagueSelect(leagueId);
+}
+
 function closeBadgeLookupModal() {
   isBadgeLookupModalOpen.value = false;
   clearSelectedLeague();
@@ -192,13 +197,13 @@ function closeBadgeLookupModal() {
       :is-open="isSearchOverlayOpen"
       :items="visibleLeagueItems"
       @close-search="closeSearchOverlay"
+      @select-result="onSearchResultSelect"
     />
 
     <UIDialog
       :is-open="isBadgeLookupModalOpen || Boolean(selectedLeagueId)"
       aria-label="League badge lookup result"
-      fit-to-content
-      surface="emphasized"
+      desktop-width="30rem"
       @close="closeBadgeLookupModal"
     >
       <UIBadgeLookup

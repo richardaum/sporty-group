@@ -7,6 +7,7 @@ import {
   DialogRoot,
   DialogTitle,
 } from "radix-vue";
+import { PhX } from "@phosphor-icons/vue";
 
 const props = withDefaults(
   defineProps<{
@@ -34,6 +35,18 @@ const dialogSizeStyle = computed(() => ({
   "--ui-dialog-width-desktop": props.desktopWidth,
   "--ui-dialog-width-mobile": props.mobileWidth,
 }));
+
+function handleEscapeClose() {
+  emit("close");
+}
+
+function handlePointerOutsideClose() {
+  emit("close");
+}
+
+function handleButtonClose() {
+  emit("close");
+}
 </script>
 
 <template>
@@ -48,14 +61,25 @@ const dialogSizeStyle = computed(() => ({
       ]"
       :style="dialogSizeStyle"
       :aria-label="ariaLabel"
-      @escape-key-down.prevent="emit('close')"
-      @pointer-down-outside.prevent="emit('close')"
+      @escape-key-down.prevent="handleEscapeClose"
+      @pointer-down-outside.prevent="handlePointerOutsideClose"
     >
       <DialogTitle class="ui-dialog-visually-hidden">{{ ariaLabel }}</DialogTitle>
       <DialogDescription class="ui-dialog-visually-hidden">
         Dialog content container.
       </DialogDescription>
-      <slot />
+      <div class="ui-dialog-inner">
+        <button
+          type="button"
+          class="ui-dialog-close"
+          data-ui-dialog-close
+          aria-label="Close dialog"
+          @click="handleButtonClose"
+        >
+          <PhX :size="20" weight="regular" aria-hidden="true" />
+        </button>
+        <slot />
+      </div>
     </DialogContent>
   </DialogRoot>
 </template>
@@ -70,6 +94,8 @@ const dialogSizeStyle = computed(() => ({
 }
 
 .ui-dialog-content {
+  /* Same cap as UIBadgeLookup .badge-panel so the close button aligns with the visible card edges on mobile */
+  --ui-dialog-inner-max-width: min(30rem, calc(100vw - 2rem));
   position: fixed;
   z-index: 51;
   top: 50%;
@@ -80,6 +106,49 @@ const dialogSizeStyle = computed(() => ({
   max-height: min(80svh, 40rem);
   overflow: auto;
   outline: none;
+}
+
+.ui-dialog-inner {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--ui-dialog-inner-max-width);
+  margin-inline: auto;
+}
+
+.ui-dialog-close {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: 2.25rem;
+  height: 2.25rem;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: color-mix(in oklab, var(--color-text-primary) 90%, white);
+  cursor: pointer;
+  z-index: 1;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.ui-dialog-close:hover {
+  border-color: color-mix(in oklab, var(--color-border) 72%, white);
+  background: color-mix(in oklab, var(--color-bg-surface) 26%, transparent);
+  color: var(--color-text-primary);
+}
+
+.ui-dialog-close:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.ui-dialog-close :where(svg) {
+  display: block;
 }
 
 .ui-dialog-content-fit {
@@ -141,13 +210,13 @@ const dialogSizeStyle = computed(() => ({
 
 @media (max-width: 48rem) {
   .ui-dialog-content {
-    top: 0;
-    left: 0;
-    transform: none;
-    width: var(--ui-dialog-width-mobile);
-    max-width: var(--ui-dialog-width-mobile);
-    height: 100svh;
-    max-height: 100svh;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(100% - (var(--space-4) * 2));
+    max-width: calc(100% - (var(--space-4) * 2));
+    height: auto;
+    max-height: calc(100svh - (var(--space-4) * 2));
   }
 }
 </style>

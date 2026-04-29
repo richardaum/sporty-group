@@ -17,6 +17,7 @@ interface Props {
 const props = defineProps<Props>();
 const emit = defineEmits<{
   closeSearch: [];
+  selectResult: [leagueId: string];
 }>();
 
 const { searchQuery, hasSearchQuery, setSearchQuery, clearSearchQuery, searchResults } =
@@ -84,43 +85,49 @@ function asSearchLeagueItem(item: unknown): SearchLeagueItem {
           <section v-if="searchResults.length" class="results-shell" aria-label="Search results">
             <ul class="results-list">
               <li v-for="item in searchResults" :key="item.idLeague" class="results-item">
-                <UICard interactive>
-                  <article class="league-card">
-                    <img
-                      :src="asSearchLeagueItem(item).imageSrc"
-                      :alt="
-                        asSearchLeagueItem(item).imageAlt ||
-                        `Representative sport image for ${asSearchLeagueItem(item).strLeague}`
-                      "
-                      class="league-art"
-                      loading="lazy"
-                    />
-                    <div class="league-body">
-                      <div class="league-title-row">
-                        <UITypography as="h3" variant="titleSm" class="league-title" truncate>
-                          {{ asSearchLeagueItem(item).strLeague }}
-                        </UITypography>
-                        <button
-                          type="button"
-                          class="league-info-button"
-                          :aria-label="`Alternate name: ${getAlternateLabel(asSearchLeagueItem(item))}`"
-                        >
-                          <PhInfo :size="14" aria-hidden="true" />
-                          <span class="league-tooltip" role="tooltip">
-                            Alternate:
-                            {{ getAlternateLabel(asSearchLeagueItem(item)) }}
+                <button
+                  type="button"
+                  class="search-result-trigger"
+                  :aria-label="`Select ${asSearchLeagueItem(item).strLeague}`"
+                  @click="emit('selectResult', asSearchLeagueItem(item).idLeague)"
+                >
+                  <UICard interactive>
+                    <article class="league-card">
+                      <img
+                        :src="asSearchLeagueItem(item).imageSrc"
+                        :alt="
+                          asSearchLeagueItem(item).imageAlt ||
+                          `Representative sport image for ${asSearchLeagueItem(item).strLeague}`
+                        "
+                        class="league-art"
+                        loading="lazy"
+                      />
+                      <div class="league-body">
+                        <div class="league-title-row">
+                          <UITypography as="h3" variant="titleSm" class="league-title" truncate>
+                            {{ asSearchLeagueItem(item).strLeague }}
+                          </UITypography>
+                          <span
+                            class="league-info-button"
+                            :aria-label="`Alternate name: ${getAlternateLabel(asSearchLeagueItem(item))}`"
+                          >
+                            <PhInfo :size="14" aria-hidden="true" />
+                            <span class="league-tooltip" role="tooltip">
+                              Alternate:
+                              {{ getAlternateLabel(asSearchLeagueItem(item)) }}
+                            </span>
                           </span>
-                        </button>
+                        </div>
+                        <p class="league-meta">
+                          <span class="league-label" title="Sport">Sport</span>
+                          <UITypography as="span" class="league-value" truncate>{{
+                            asSearchLeagueItem(item).strSport
+                          }}</UITypography>
+                        </p>
                       </div>
-                      <p class="league-meta">
-                        <span class="league-label" title="Sport">Sport</span>
-                        <UITypography as="span" class="league-value" truncate>{{
-                          asSearchLeagueItem(item).strSport
-                        }}</UITypography>
-                      </p>
-                    </div>
-                  </article>
-                </UICard>
+                    </article>
+                  </UICard>
+                </button>
               </li>
             </ul>
           </section>
@@ -279,6 +286,24 @@ function asSearchLeagueItem(item: unknown): SearchLeagueItem {
 
 .results-item {
   min-width: 0;
+}
+
+.search-result-trigger {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+  border-radius: var(--radius-lg);
+  min-width: 0;
+  cursor: pointer;
+}
+
+.search-result-trigger:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
 }
 
 .league-card {

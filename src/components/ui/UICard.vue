@@ -6,15 +6,26 @@ defineOptions({
 withDefaults(
   defineProps<{
     interactive?: boolean;
+    selected?: boolean;
+    fullHeight?: boolean;
   }>(),
   {
     interactive: false,
+    selected: false,
+    fullHeight: false,
   },
 );
 </script>
 
 <template>
-  <section class="ui-card" :class="{ 'ui-card-interactive': interactive }">
+  <section
+    class="ui-card"
+    :class="{
+      'ui-card-interactive': interactive,
+      'ui-card-selected': selected,
+      'ui-card-full-height': fullHeight,
+    }"
+  >
     <header v-if="$slots.header" class="ui-card-header">
       <slot name="header" />
     </header>
@@ -79,5 +90,16 @@ withDefaults(
 .ui-card-interactive:focus-within {
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
+}
+
+.ui-card-selected {
+  border-color: color-mix(in oklab, var(--color-brand-500) 60%, var(--color-border));
+  box-shadow:
+    var(--shadow-soft),
+    0 0 0 1px color-mix(in oklab, var(--color-brand-500) 65%, transparent);
+}
+
+.ui-card-full-height {
+  height: 100%;
 }
 </style>

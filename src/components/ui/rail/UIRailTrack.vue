@@ -350,8 +350,8 @@ watch(
 }
 
 .ui-rail-track-card {
-  flex: 0 0 var(--rail-card-width);
-  min-width: 0;
+  flex: 0 0 max(var(--rail-card-width), 12.5rem);
+  min-width: 12.5rem;
   scroll-snap-align: start;
   opacity: 1;
   transition: opacity 200ms ease;
@@ -362,7 +362,7 @@ watch(
 }
 
 .ui-rail-track-card-narrow {
-  flex-basis: calc(var(--rail-card-width) * 0.82);
+  flex-basis: max(calc(var(--rail-card-width) * 0.82), 12.5rem);
 }
 
 .ui-rail-track-card > :deep(*) {

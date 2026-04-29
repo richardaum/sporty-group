@@ -129,7 +129,10 @@ function withLabel(template: string, label: string) {
 .badge-panel {
   border: none;
   border-radius: var(--radius-lg);
-  width: min(30rem, calc(100vw - 2rem));
+  box-sizing: border-box;
+  width: 100%;
+  max-width: min(30rem, calc(100vw - 2rem));
+  margin-inline: auto;
   background: linear-gradient(
     160deg,
     color-mix(in oklab, var(--color-brand-100) 30%, var(--color-bg-surface)) 0%,
@@ -156,12 +159,14 @@ function withLabel(template: string, label: string) {
   max-width: 100%;
   width: min(28rem, 100%);
   height: auto;
+  aspect-ratio: 1 / 1;
   border-radius: var(--radius-lg);
   border: 1px solid color-mix(in oklab, var(--color-brand-500) 32%, var(--color-border));
   background: color-mix(in oklab, var(--color-bg-elevated) 84%, black);
   padding: var(--space-3);
   object-fit: contain;
   justify-self: center;
+  display: block;
 }
 
 .badge-season-list {
@@ -215,6 +220,10 @@ function withLabel(template: string, label: string) {
 
 .badge-state-visual-missing {
   width: min(28rem, 100%);
+  min-height: 0;
+  aspect-ratio: 1 / 1;
+  align-content: center;
+  padding: var(--space-4);
 }
 
 .badge-state-ring {
@@ -322,7 +331,8 @@ function withLabel(template: string, label: string) {
   font-size: 0.95rem;
   line-height: 1.45;
   text-align: center;
-  max-width: 28ch;
+  max-width: min(28ch, calc(100% - (2 * var(--space-3))));
+  padding-inline: var(--space-2);
 }
 
 .badge-panel-copy-error {

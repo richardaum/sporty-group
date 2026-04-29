@@ -34,7 +34,7 @@ const alternateTags = computed(() => props.item.alternateTags ?? []);
     :aria-pressed="isSelected ? 'true' : 'false'"
     @click="emit('select', item.idLeague)"
   >
-    <UICard interactive>
+    <UICard interactive :selected="Boolean(isSelected)" full-height>
       <article class="league-card">
         <img
           :src="item.imageSrc"
@@ -43,6 +43,10 @@ const alternateTags = computed(() => props.item.alternateTags ?? []);
           loading="lazy"
         />
         <div class="league-body">
+          <p class="league-meta">
+            <span class="league-label">Sport</span>
+            <UITypography as="span" truncate>{{ props.item.strSport }}</UITypography>
+          </p>
           <div class="league-title-row">
             <UITypography as="h3" variant="titleSm" class="league-title" truncate>
               {{ props.item.strLeague }}
@@ -70,10 +74,6 @@ const alternateTags = computed(() => props.item.alternateTags ?? []);
               </TooltipRoot>
             </TooltipProvider>
           </div>
-          <p class="league-meta">
-            <span class="league-label">Sport</span>
-            <UITypography as="span" truncate>{{ props.item.strSport }}</UITypography>
-          </p>
         </div>
       </article>
     </UICard>
@@ -87,7 +87,7 @@ const alternateTags = computed(() => props.item.alternateTags ?? []);
   background: transparent;
   text-align: left;
   width: 100%;
-  max-width: var(--rail-card-width, 100%);
+  max-width: 100%;
   padding: 0;
   border-radius: var(--radius-lg);
   min-width: 0;
@@ -96,13 +96,6 @@ const alternateTags = computed(() => props.item.alternateTags ?? []);
 .league-card-trigger:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
-}
-
-.league-card-trigger-selected :deep(.ui-card) {
-  border-color: color-mix(in oklab, var(--color-brand-500) 60%, var(--color-border));
-  box-shadow:
-    var(--shadow-soft),
-    0 0 0 1px color-mix(in oklab, var(--color-brand-500) 65%, transparent);
 }
 
 .league-card {
@@ -149,16 +142,22 @@ const alternateTags = computed(() => props.item.alternateTags ?? []);
 }
 
 .league-body {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: var(--space-2);
   min-width: 0;
+  height: 100%;
 }
 
 .league-alternate-tags {
+  /* Compensa o início visual do texto dentro da badge (borda + padding inicial). */
+  --league-badge-text-inline-offset: calc(1px + 0.375rem);
+  margin-top: auto;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   gap: var(--space-1);
+  margin-inline-start: calc(-1 * var(--league-badge-text-inline-offset));
   min-height: auto;
   max-height: none;
   min-width: 0;
@@ -199,8 +198,10 @@ const alternateTags = computed(() => props.item.alternateTags ?? []);
 .league-meta {
   margin: 0;
   color: var(--color-text-secondary);
-  display: grid;
-  gap: var(--space-1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
 }
 
 .league-label {
