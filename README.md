@@ -2,11 +2,11 @@
 
 ## Demo
 
-<video controls playsinline muted width="100%" src="https://github.com/richardaum/sporty-group/raw/main/demo.mov">
-  <a href="https://github.com/richardaum/sporty-group/raw/main/demo.mov">Download demo (QuickTime .mov)</a>
+<video controls playsinline muted width="100%" src="https://github.com/richardaum/sporty-group/raw/main/demo.mp4">
+  <a href="https://github.com/richardaum/sporty-group/raw/main/demo.mp4">Download demo (MP4)</a>
 </video>
 
-_Screen recording of the assignment app in the dev environment. If the player does not load in your browser, use the download link above._
+_Screen recording (H.264 MP4, compressed with ffmpeg for README). If the player does not load, use the download link above._
 
 ---
 

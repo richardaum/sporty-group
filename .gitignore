@@ -28,6 +28,9 @@ test-results
 !.env.example
 *.local
 
+# Raw screen capture (large); committed asset is `demo.mp4`
+demo.mov
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
