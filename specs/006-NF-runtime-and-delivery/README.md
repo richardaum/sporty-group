@@ -43,6 +43,7 @@ Ensure reviewers can run the project successfully from a public repository submi
 4. Run lint/type-check/build validation and resolve blockers that prevent local execution.
 5. Validate public repository readiness (no secrets, reproducible setup, clear framework disclosure).
 6. Perform final smoke test of key user flows before marking delivery complete.
+7. Add visual snapshoting test using Playwright for the main user flows.
 
 ## Acceptance Criteria
 

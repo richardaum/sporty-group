@@ -35,6 +35,7 @@
 - Prefer absolute imports rooted at `@/` for all internal modules under `src/`.
 - Do not use parent-relative imports (`../` or `./`) for internal app modules when an `@/` path is available.
 - Keep external package imports unchanged (for example `vue`, `@tanstack/vue-query`).
+- Avoid inline type queries like `typeof import("x/y/z")`; prefer a static import at the top (or `import type`) and use `typeof ImportedBinding`.
 
 ## Styling Rules
 
@@ -77,3 +78,8 @@
 - Build and type-check before merge (`pnpm build`).
 - Keep test coverage always increasing: new changes must maintain or improve current coverage (never decrease it).
 - When adding/changing core stack items, update `README.md` in the same change.
+
+## Testing Rules
+
+- Prefer behavior, semantics, and accessible output assertions over implementation details.
+- Do not write tests that pass/fail based on CSS class presence or absence.

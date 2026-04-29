@@ -90,6 +90,20 @@ Sequencing rules:
 - `complete` - Finished
 - `archived` - No longer relevant
 
+## Execution flow
+
+- Review the spec and make sure you understand the goal and scope.
+- Once review, let the developer approve the spec.
+- Once approved, start the implementation.
+- Include tests and make sure they are passing.
+- Update coverage to match current increasing or stable coverage.
+- Make sure candidates to be reusable component are extracted to `src/components/ui` and are documented.
+- If needed, include stories for components in `src/components/ui`.
+- Lint and TSC should pass without errors.
+- Resync spec until all items are addressed, over and over.
+- Commit only after user acceptance.
+- Commits should be atomic and separated by logical changes.
+
 ## Learn More
 
 Visit [leanspec.dev](https://leanspec.dev) for documentation.
