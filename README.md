@@ -1,5 +1,15 @@
 # Sporty Group - Home Assignment (FE)
 
+## Demo
+
+<video controls playsinline muted width="100%" src="https://github.com/richardaum/sporty-group/raw/main/demo.mov">
+  <a href="https://github.com/richardaum/sporty-group/raw/main/demo.mov">Download demo (QuickTime .mov)</a>
+</video>
+
+_Screen recording of the assignment app in the dev environment. If the player does not load in your browser, use the download link above._
+
+---
+
 This repository contains the frontend take-home assignment solution for Sporty Group.
 The goal is to deliver a runnable single-page application that consumes TheSportsDB APIs, lists sports leagues, supports filtering/search, and displays season badge data with caching.
 
