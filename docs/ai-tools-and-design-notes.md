@@ -1,15 +1,59 @@
-# AI tools & design notes (assignment supplement)
+# AI tools & design notes
 
-Concise supplement requested in the home-assignment brief. Setup, scripts, and full tooling context remain in [`README.md`](../README.md) at repository root.
+Short companion to the codebase: **how AI tools assisted**, **which toolchain the app runs on**, and **why major UI and architecture choices exist**. Clone, install, and scripts live in **[`README.md`](../README.md)**.
+
+## TL;DR
+
+- **UX:** Streaming-style catalog rails (`UIRailTrack`), overlay search (keyboard-friendly, minimal chrome), sticky sport filter while scrolling, mobile-first spacing and breakpoints—focused on scanning many leagues quickly.
+- **Architecture:** Feature logic in composables; **TanStack Query** drives server state (leagues, badges) with cache-first semantics; shared UI primitives (Radix-backed select, modal badge flow, rail layout). **Vitest** with coverage thresholds on `src`, **Storybook** for isolated components, **Playwright** snapshots on a few high-traffic screens.
+- **Application stack:** **Vue 3**, **TypeScript**, **Vite** SPA with **Vue Router**; data from **TheSportsDB** (`all_leagues`, `search_all_seasons` for badges).
+- **AI tooling:** **Cursor** for scaffolding, tests, and config wiring; behaviour, UX, and review stayed human-led.
+- **Core behaviour:** Browse leagues with sport and name filters, show `strLeague` / `strSport` / `strLeagueAlternate` on cards, open **badge lookup** with season navigation, avoid redundant network work via shared query cache.
+
+## Tools Used
+
+- **Vue 3** for the UI with reactive components and **`<script setup>`** SFCs.
+- **TypeScript** for static typing and safer, more maintainable code.
+- **Vite** as the development server and build tool for fast feedback loops.
+- **Vue Router** for declarative client-side routing and navigation between views.
+- **TanStack Query (Vue Query)** for server-state fetching, caching, and synchronization.
+- **Radix Vue** as the base primitive layer for accessible interactive controls (currently applied to Select).
+- **@phosphor-icons/vue** for consistent iconography in reusable UI components and stories.
+- **Storybook** for shareable component previews and state documentation.
+- **ESLint** for static analysis and consistent code quality in JavaScript/TypeScript and Vue files.
+- **Prettier** for automated, consistent code formatting across the project.
+- **lint-staged** for running lint/format only on staged files during commits.
+- **Husky** for managing Git hooks like `pre-commit`.
+- **Cursor** as an AI assistant for development workflows and coding support.
+
+## Skills Used
+
+- [frontend-design](https://github.com/julianoczkowski/designer-skills/tree/main/frontend-design) - Build distinctive, production-grade frontend interfaces with high design quality and clear aesthetic direction.
+- [vue](https://github.com/antfu/skills/tree/main/skills/vue) - Vue 3 Composition API patterns and best practices.
+- [vue-best-practices](https://github.com/antfu/skills/tree/main/skills/vue-best-practices) - Guidance on Vue component structure and conventions.
+- [vue-testing-best-practices](https://github.com/antfu/skills/tree/main/skills/vue-testing-best-practices) - Robust Vue testing patterns with Vitest and Vue Test Utils.
+- [vite](https://github.com/antfu/skills/tree/main/skills/vite) - Vite configuration and build workflow.
+- [vue-router-best-practices](https://github.com/antfu/skills/tree/main/skills/vue-router-best-practices) - Vue Router 4 navigation and guard patterns.
+- [pnpm](https://github.com/antfu/skills/tree/main/skills/pnpm) - Dependency and workspace management.
+- [vueuse-functions](https://github.com/antfu/skills/tree/main/skills/vueuse-functions) - Applying VueUse composables to simplify feature implementation.
+- [web-design-guidelines](https://github.com/antfu/skills/tree/main/skills/web-design-guidelines) - UI and accessibility reviews based on web standards.
+- [vitest](https://github.com/antfu/skills/tree/main/skills/vitest) - Fast unit testing integrated with the Vite ecosystem.
+- [prompt-engineering](https://github.com/NeoLabHQ/context-engineering-kit/tree/master/plugins/customaize-agent/skills/prompt-engineering) - Writing high-quality prompts, hooks, and agent workflows.
+- [generate-agents](https://github.com/RayFernando1337/llm-cursor-rules/blob/main/generate-agents.md) - Generating lightweight root and detailed sub-folder AGENTS.md files with JIT indexing.
+- [lean-spec](https://github.com/codervisor/lean-spec) - Lightweight, spec-driven planning and execution workflows.
+
+## Design Decisions
+
+- **Netflix-inspired UI/UX:** The visual direction and browsing behavior follow a streaming-style catalog experience to make league discovery feel familiar and fast.
+- **Reusable rail track component:** `UIRailTrack` is used as a shared horizontal rail primitive to keep carousel behavior consistent across league groups.
+- **Mobile-first approach:** Layout, spacing, and interactions are designed for smaller screens first, then progressively enhanced for tablet and desktop.
+- **Mission Control-style search:** Search is exposed through an overlay pattern inspired by Mission Control/command palette workflows for quick keyboard-first access.
+- **Sticky sport filter dropdown:** The sport filter remains available in the sticky header so users can refine results without losing browsing context.
+- **Season badge navigator:** Badge lookup presents available badges across seasons with `UIItemNavigator`, enabling quick back/forward season comparison.
+- **Composable-first behavior isolation:** Interaction and state logic are pushed into focused composables to isolate behaviors, keep components lean, and improve testability.
+- **Unit tests with coverage thresholds:** Vitest runs component and composable tests (Vue Test Utils and Testing Library); `pnpm test` validates behavior, and `pnpm test:coverage` reports V8 coverage over `src` with enforced minimums so changes do not silently erode baseline coverage.
+- **Visual consistency workflow:** Storybook is included for isolated UI states, and Playwright visual snapshots are used to catch regressions across key user flows.
 
 ## AI assistance
 
-**Cursor** (and embedded coding agents) supported day-to-day work: scaffolding components and composables, test and config wiring, refactoring for clarity, lint/type fixes, and documentation. Choices (stack, UX patterns, file layout) stayed with the assignee; generated output was reviewed, adjusted, and covered by tests where appropriate.
-
-## Design decisions
-
-- **Catalog / browsing UX:** Streaming-style rails and grouping to make scanning many leagues fast and familiar on small and large viewports.
-- **Search:** Command-palette / overlay pattern (including keyboard shortcut) instead of an always-visible field, to reduce chrome while keeping name search central.
-- **Sport filter:** Sticky header dropdown so filters stay reachable while scrolling rails.
-- **Badge lookup:** Modal flow with TanStack Query–cached season/badge data; navigator when multiple seasons exist.
-- **Quality:** Component tests plus optional Playwright visual checks for regressions on key flows; Storybook for isolated UI review.
+**Cursor** (and embedded coding agents) supported scaffolding components and composables, test and config wiring, refactors for clarity, lint/type fixes, and documentation. Stack, UX patterns, and file layout stayed with the human author; generated output was reviewed, adjusted, and covered by tests where it mattered.

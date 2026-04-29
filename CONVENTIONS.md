@@ -6,8 +6,7 @@
 - Keep code and docs aligned with real scripts available in `package.json`.
 - Prefer `pnpm` commands for dependency management and scripts.
 - Keep changes focused and easy to review.
-- Keep important dependencies and tools updated in `README.md` under `Tools Used`.
-- Keep important skills updated in `README.md` under `Skills Used`.
+- Keep important dependencies, tools, and skills recorded in **`docs/ai-tools-and-design-notes.md`** (maintain **`TL;DR`** accuracy when overview-level context changes).
 - Keep all generated code 100% in English (identifiers, comments, strings, and messages).
 
 ## TypeScript-First Config
