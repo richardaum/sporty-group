@@ -4,7 +4,7 @@
 
 <video src="https://github.com/richardaum/sporty-group/raw/main/demo.mp4" controls playsinline muted width="100%"></video>
 
-`https://github.com/richardaum/sporty-group/raw/main/demo.mp4`
+[Play demo video - MP4](https://github.com/richardaum/sporty-group/raw/main/demo.mp4)
 
 ---
 
