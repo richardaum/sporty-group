@@ -20,6 +20,7 @@ storybook-static
 
 # Test and tooling outputs
 coverage
+test-results
 
 # Local environment files
 .env
