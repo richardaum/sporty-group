@@ -5,6 +5,27 @@ The goal is to deliver a runnable single-page application that consumes TheSport
 
 It also serves as the delivery package for the recruiting process, including assignment context in `docs/pdf-instructions.md` and a sanitized communication reference in `docs/email-instructions.md`.
 
+**Concise AI and design notes (brief supplement):** [`docs/ai-tools-and-design-notes.md`](docs/ai-tools-and-design-notes.md)
+
+## Reviewer Setup
+
+```bash
+pnpm install
+pnpm dev
+```
+
+Open `http://localhost:5173` to run the SPA locally.
+
+## Validation Commands
+
+```bash
+pnpm test
+pnpm test:coverage
+pnpm lint
+pnpm build
+pnpm test:e2e:visual
+```
+
 ## Tools Used
 
 - **Vue 3** for building the user interface with reactive components (despite my familiarity with React, I chose Vue to highlight my skills in the framework used by the company).
@@ -37,3 +58,15 @@ It also serves as the delivery package for the recruiting process, including ass
 - [prompt-engineering](https://github.com/NeoLabHQ/context-engineering-kit/tree/master/plugins/customaize-agent/skills/prompt-engineering) - Writing high-quality prompts, hooks, and agent workflows.
 - [generate-agents](https://github.com/RayFernando1337/llm-cursor-rules/blob/main/generate-agents.md) - Generating lightweight root and detailed sub-folder AGENTS.md files with JIT indexing.
 - [lean-spec](https://github.com/codervisor/lean-spec) - Lightweight, spec-driven planning and execution workflows.
+
+## Design Decisions
+
+- **Netflix-inspired UI/UX:** The visual direction and browsing behavior follow a streaming-style catalog experience to make league discovery feel familiar and fast.
+- **Reusable rail track component:** `UIRailTrack` is used as a shared horizontal rail primitive to keep carousel behavior consistent across league groups.
+- **Mobile-first approach:** Layout, spacing, and interactions are designed for smaller screens first, then progressively enhanced for tablet and desktop.
+- **Mission Control-style search:** Search is exposed through an overlay pattern inspired by Mission Control/command palette workflows for quick keyboard-first access.
+- **Sticky sport filter dropdown:** The sport filter remains available in the sticky header so users can refine results without losing browsing context.
+- **Season badge navigator:** Badge lookup presents available badges across seasons with `UIItemNavigator`, enabling quick back/forward season comparison.
+- **Composable-first behavior isolation:** Interaction and state logic are pushed into focused composables to isolate behaviors, keep components lean, and improve testability.
+- **Unit tests with coverage thresholds:** Vitest runs component and composable tests (Vue Test Utils and Testing Library); `pnpm test` validates behavior, and `pnpm test:coverage` reports V8 coverage over `src` with enforced minimums so changes do not silently erode baseline coverage.
+- **Visual consistency workflow:** Storybook is included for isolated UI states, and Playwright visual snapshots are used to catch regressions across key user flows.
