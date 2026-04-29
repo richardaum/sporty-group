@@ -2,9 +2,9 @@
 
 ## Demo
 
-<video src="https://github.com/richardaum/sporty-group/raw/main/demo.mp4" controls playsinline muted width="100%">
-  <a href="https://github.com/richardaum/sporty-group/raw/main/demo.mp4">Open demo (MP4)</a>
-</video>
+<video src="https://github.com/richardaum/sporty-group/raw/main/demo.mp4" controls playsinline muted width="100%"></video>
+
+`https://github.com/richardaum/sporty-group/raw/main/demo.mp4`
 
 ---
 
