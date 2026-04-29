@@ -3,9 +3,10 @@ import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } fro
 import type { ComponentPublicInstance } from "vue";
 import UIScrollbar from "@/components/ui/UIScrollbar.vue";
 import { useRailBleed } from "@/components/ui/rail/composables/useRailBleed";
+import { useRailKeyboardNavigation } from "@/components/ui/rail/composables/useRailKeyboardNavigation";
 import { useRailNavigation } from "@/components/ui/rail/composables/useRailNavigation";
 import { useRailSnap } from "@/components/ui/rail/composables/useRailSnap";
-import { useRailWheelMomentum } from "@/components/ui/rail/composables/useRailWheelMomentum";
+import { useRailHorizontalWheelScroll } from "@/components/ui/rail/composables/useRailHorizontalWheelScroll";
 
 defineOptions({
   name: "UIRailTrack",
@@ -49,7 +50,7 @@ const {
   updateViewportBleed,
   updateBleedCardOpacityState: recomputeBleedCardOpacityState,
 } = useRailBleed(railRootEl, listEl);
-const { onWheel: onWheelMomentum, clearMomentum } = useRailWheelMomentum({
+const { onWheel: onHorizontalWheelScroll, clearWheelAnimation } = useRailHorizontalWheelScroll({
   getScrollElement,
 });
 const { canGoPrevious, canGoNext, updateNavigationState } = useRailNavigation({
@@ -70,7 +71,15 @@ const {
 } = useRailSnap({
   getScrollElement,
   getCardOffsets,
-  clearMomentum,
+  clearWheelAnimation,
+});
+const {
+  onFocusIn,
+  onKeydown,
+  reset: resetKeyboardNavigation,
+} = useRailKeyboardNavigation({
+  getListElement: () => listEl.value,
+  getItemCount: () => props.items.length,
 });
 const shouldRenderControls = computed(
   () => props.scrollable && props.showControls && props.items.length > 1,
@@ -119,7 +128,7 @@ function onScroll() {
 
 function onWheel(event: WheelEvent) {
   markWheelActivity();
-  onWheelMomentum(event);
+  onHorizontalWheelScroll(event);
 }
 
 function onResize() {
@@ -140,6 +149,7 @@ function syncViewportWidth() {
 
 onMounted(async () => {
   await nextTick();
+  resetKeyboardNavigation();
   syncViewportWidth();
   updateViewportBleed();
   const scrollEl = getScrollElement();
@@ -154,7 +164,7 @@ onBeforeUnmount(() => {
   scrollEl?.removeEventListener("scroll", onScroll);
   scrollEl?.removeEventListener("wheel", onWheel);
   cleanupSnap();
-  clearMomentum();
+  clearWheelAnimation();
   window.removeEventListener("resize", onResize);
 });
 
@@ -164,6 +174,7 @@ watch(
     syncViewportWidth();
     updateViewportBleed();
     await nextTick();
+    resetKeyboardNavigation();
     updateNavigationState();
   },
 );
@@ -181,7 +192,7 @@ watch(
       :suppress-scroll-y="true"
       :aria-label="ariaLabel"
     >
-      <ul ref="listEl" class="ui-rail-track-list">
+      <ul ref="listEl" class="ui-rail-track-list" @focusin="onFocusIn" @keydown="onKeydown">
         <li
           v-for="(item, index) in items"
           :key="getKey?.(item, index) ?? index"

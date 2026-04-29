@@ -1,10 +1,6 @@
 import { computed } from "vue";
 import type { LeagueListItem } from "@/api/sportsDb";
 import { useLeaguesQuery } from "@/composables/useLeaguesQuery";
-import {
-  toLeaguePresentationItem,
-  type LeaguePresentationItem,
-} from "@/composables/useLeaguePresentationModel";
 import leagueHeroImage from "@/assets/leagues/league-hero.jpg";
 import league01 from "@/assets/leagues/league-01.jpg";
 import league02 from "@/assets/leagues/league-02.jpg";
@@ -15,9 +11,28 @@ import league06 from "@/assets/leagues/league-06.jpg";
 import league07 from "@/assets/leagues/league-07.jpg";
 import league08 from "@/assets/leagues/league-08.jpg";
 
+export interface LeaguePresentationItem extends LeagueListItem {
+  imageSrc: string;
+  alternateLabel: string;
+  alternateTags: string[];
+  imageAlt: string;
+}
+
 export interface SportLeagueGroupViewModel {
   sport: string;
   items: LeaguePresentationItem[];
+}
+
+export function getLeagueKey(item: LeaguePresentationItem): string {
+  return item.idLeague;
+}
+
+export function getSportLeagueKey(sport: string, item: LeaguePresentationItem): string {
+  return `${sport}-${item.idLeague}`;
+}
+
+export function getHeroDescription(item: LeaguePresentationItem): string {
+  return `${item.strSport} league catalog from TheSportsDB. Alternate title: ${item.strLeagueAlternate}.`;
 }
 
 const leagueImages = [
@@ -30,6 +45,39 @@ const leagueImages = [
   league07,
   league08,
 ];
+
+function normalizeText(value: string | null | undefined): string {
+  return value?.trim() ?? "";
+}
+
+function toAlternateTags(value: string): string[] {
+  return value
+    .split(",")
+    .map((chunk) => chunk.trim())
+    .filter((chunk) => {
+      if (!chunk) {
+        return false;
+      }
+
+      return chunk.toLowerCase() !== "n/a";
+    });
+}
+
+function toLeaguePresentationItem(
+  league: LeagueListItem,
+  imageSrc: string,
+): LeaguePresentationItem {
+  const leagueName = normalizeText(league.strLeague);
+  const alternate = normalizeText(league.strLeagueAlternate);
+
+  return {
+    ...league,
+    imageSrc,
+    alternateLabel: alternate || "Not available",
+    alternateTags: toAlternateTags(alternate),
+    imageAlt: `Representative sport image for ${leagueName || "league"}`,
+  };
+}
 
 function toLeagueItems(leagues: LeagueListItem[]): LeaguePresentationItem[] {
   return leagues.map((league, index) =>

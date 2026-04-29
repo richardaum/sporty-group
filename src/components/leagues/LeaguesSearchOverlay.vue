@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { PhInfo } from "@phosphor-icons/vue";
 import UICard from "@/components/ui/UICard.vue";
+import UIEmptyState from "@/components/ui/UIEmptyState.vue";
 import UIScrollbar from "@/components/ui/UIScrollbar.vue";
 import UITypography from "@/components/ui/UITypography.vue";
 import { useLeagueSearchOverlayViewModel } from "@/composables/useLeagueSearchOverlayViewModel";
-import type { LeaguePresentationItem } from "@/composables/useLeaguePresentationModel";
+import type { LeaguePresentationItem } from "@/composables/useLeaguesCatalogDataViewModel";
 
 type SearchLeagueItem = LeaguePresentationItem;
 
@@ -123,9 +124,12 @@ function asSearchLeagueItem(item: unknown): SearchLeagueItem {
               </li>
             </ul>
           </section>
-          <p v-else class="status" role="status" aria-live="polite">
-            No leagues match your search.
-          </p>
+          <UIEmptyState
+            v-else
+            variant="small"
+            title="No leagues match your search"
+            description="Try another term or clear the search to browse all visible leagues."
+          />
         </UIScrollbar>
       </div>
     </section>
@@ -392,14 +396,6 @@ function asSearchLeagueItem(item: unknown): SearchLeagueItem {
 .league-value {
   min-width: 0;
   flex: 1 1 auto;
-}
-
-.status {
-  margin: 0;
-  padding: var(--space-4);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-  background: var(--color-bg-surface);
 }
 
 @media (prefers-reduced-motion: reduce) {

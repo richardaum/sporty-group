@@ -1,5 +1,5 @@
 import { computed, shallowRef, type MaybeRefOrGetter, toValue } from "vue";
-import type { LeaguePresentationItem } from "@/composables/useLeaguePresentationModel";
+import type { LeaguePresentationItem } from "@/composables/useLeaguesCatalogDataViewModel";
 
 export interface SportFilterOption {
   value: string;

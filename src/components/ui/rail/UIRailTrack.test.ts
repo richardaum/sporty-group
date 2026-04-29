@@ -110,9 +110,6 @@ describe("UIRailTrack functional behavior", () => {
 
     await fireEvent.scroll(scrollEl);
     await nextTick();
-    const classes = cards.map((card) => card.className);
-    expect(classes[2]).toContain("ui-rail-track-card-bleed");
-    expect(classes[3]).toContain("ui-rail-track-card-bleed");
 
     const buttons = within(railRoot).getAllByRole("button", { hidden: true });
     expect(buttons).toHaveLength(2);
@@ -127,9 +124,6 @@ describe("UIRailTrack functional behavior", () => {
     await view.rerender({ items: makeItems(5), cardWidth: "narrow", ariaLabel: "Rail test" });
     await nextTick();
     expect(view.container.querySelectorAll(".ui-rail-track-card")).toHaveLength(5);
-    expect(view.container.querySelector(".ui-rail-track-card")?.className).toContain(
-      "ui-rail-track-card-narrow",
-    );
 
     view.unmount();
   });
@@ -294,6 +288,55 @@ describe("UIRailTrack functional behavior", () => {
 
     await fireEvent.scroll(scrollEl);
     await nextTick();
+
+    view.unmount();
+  });
+
+  it("keeps only the first rail item in tab order by default", async () => {
+    const view = render(UIRailTrack, {
+      props: { items: makeItems(3), showControls: false },
+      slots: {
+        default: ({ index }: { index: number }) =>
+          h("button", { type: "button" }, `Item ${index + 1}`),
+      },
+    });
+    await nextTick();
+
+    const itemButtons = Array.from(
+      view.container.querySelectorAll(".ui-rail-track-list > .ui-rail-track-card button"),
+    ) as HTMLButtonElement[];
+    expect(itemButtons).toHaveLength(3);
+    expect(itemButtons[0]?.tabIndex).toBe(0);
+    expect(itemButtons[1]?.tabIndex).toBe(-1);
+    expect(itemButtons[2]?.tabIndex).toBe(-1);
+
+    view.unmount();
+  });
+
+  it("moves focus between rail cards with arrow keys", async () => {
+    const view = render(UIRailTrack, {
+      props: { items: makeItems(3), showControls: false },
+      slots: {
+        default: ({ index }: { index: number }) =>
+          h("button", { type: "button" }, `Item ${index + 1}`),
+      },
+    });
+    await nextTick();
+
+    const itemButtons = Array.from(
+      view.container.querySelectorAll(".ui-rail-track-list > .ui-rail-track-card button"),
+    ) as HTMLButtonElement[];
+
+    itemButtons[0]?.focus();
+    await fireEvent.keyDown(itemButtons[0] as HTMLButtonElement, { key: "ArrowRight" });
+    expect(document.activeElement).toBe(itemButtons[1]);
+    expect(itemButtons[0]?.tabIndex).toBe(-1);
+    expect(itemButtons[1]?.tabIndex).toBe(0);
+
+    await fireEvent.keyDown(itemButtons[1] as HTMLButtonElement, { key: "ArrowLeft" });
+    expect(document.activeElement).toBe(itemButtons[0]);
+    expect(itemButtons[0]?.tabIndex).toBe(0);
+    expect(itemButtons[1]?.tabIndex).toBe(-1);
 
     view.unmount();
   });

@@ -2,16 +2,24 @@ import { fireEvent, render, within } from "@testing-library/vue";
 import { shallowRef } from "vue";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import LeaguesCatalog from "@/components/leagues/LeaguesCatalog.vue";
+import type * as UseLeaguesCatalogDataViewModelModule from "@/composables/useLeaguesCatalogDataViewModel";
 
 const mockUseLeaguesCatalogDataViewModel = vi.fn();
-const mockUseSportFilter = vi.fn();
+const mockUseLeagueBadgeLookup = vi.fn();
 
-vi.mock("@/composables/useLeaguesCatalogDataViewModel", () => ({
-  useLeaguesCatalogDataViewModel: () => mockUseLeaguesCatalogDataViewModel(),
-}));
+vi.mock("@/composables/useLeaguesCatalogDataViewModel", async () => {
+  const actual = await vi.importActual<typeof UseLeaguesCatalogDataViewModelModule>(
+    "@/composables/useLeaguesCatalogDataViewModel",
+  );
 
-vi.mock("@/composables/useSportFilter", () => ({
-  useSportFilter: (items: unknown) => mockUseSportFilter(items),
+  return {
+    ...actual,
+    useLeaguesCatalogDataViewModel: () => mockUseLeaguesCatalogDataViewModel(),
+  };
+});
+
+vi.mock("@/composables/useLeagueBadgeLookup", () => ({
+  useLeagueBadgeLookup: (items: unknown) => mockUseLeagueBadgeLookup(items),
 }));
 
 describe("LeaguesCatalog", () => {
@@ -24,16 +32,19 @@ describe("LeaguesCatalog", () => {
       },
     );
 
-    mockUseSportFilter.mockImplementation((items: unknown) => ({
-      sportFilterOptions: shallowRef([
-        { value: "all", label: "All sports" },
-        { value: "soccer", label: "Soccer" },
-      ]),
-      selectedSport: shallowRef("all"),
-      isSportFilterActive: shallowRef(false),
-      visibleItems: items,
-      setSelectedSport: vi.fn(),
-    }));
+    mockUseLeagueBadgeLookup.mockReturnValue({
+      selectedLeagueId: shallowRef(null),
+      selectedLeague: shallowRef(null),
+      badgesQuery: {
+        isLoading: shallowRef(false),
+        isError: shallowRef(false),
+      },
+      primaryBadge: shallowRef(null),
+      badgePreviewAssets: shallowRef([]),
+      badgePreviewAsset: shallowRef(null),
+      selectLeague: vi.fn(),
+      clearSelectedLeague: vi.fn(),
+    });
   });
 
   afterEach(() => {
@@ -64,6 +75,7 @@ describe("LeaguesCatalog", () => {
             strLeague: "Premier League 1",
             strSport: "Soccer",
             strLeagueAlternate: "EPL",
+            alternateTags: ["EPL"],
             imageSrc: "/main.jpg",
           },
           {
@@ -71,6 +83,7 @@ describe("LeaguesCatalog", () => {
             strLeague: "Premier League 2",
             strSport: "Soccer",
             strLeagueAlternate: "EPL 2",
+            alternateTags: ["EPL 2"],
             imageSrc: "/main-2.jpg",
           },
           {
@@ -78,6 +91,7 @@ describe("LeaguesCatalog", () => {
             strLeague: "Serie A",
             strSport: "Soccer",
             strLeagueAlternate: "ITA",
+            alternateTags: ["ITA"],
             imageSrc: "/main-3.jpg",
           },
           {
@@ -87,6 +101,14 @@ describe("LeaguesCatalog", () => {
             strLeagueAlternate: "GER",
             imageSrc: "/main-4.jpg",
           },
+          {
+            idLeague: "2",
+            strLeague: "La Liga",
+            strSport: "Soccer",
+            strLeagueAlternate: "Primera Division",
+            alternateTags: ["Primera Division"],
+            imageSrc: "/sport.jpg",
+          },
         ]),
         sportLeagueGroups: shallowRef([]),
         sportFilterOptions: shallowRef([
@@ -95,46 +117,6 @@ describe("LeaguesCatalog", () => {
         ]),
         selectedSport: shallowRef("all"),
         isSportFilterActive: shallowRef(false),
-      });
-
-      mockUseSportFilter.mockReturnValue({
-        sportFilterOptions: shallowRef([
-          { value: "all", label: "All sports" },
-          { value: "soccer", label: "Soccer" },
-        ]),
-        selectedSport: shallowRef("all"),
-        isSportFilterActive: shallowRef(false),
-        visibleItems: shallowRef([
-          {
-            idLeague: "1",
-            strLeague: "Premier League 1",
-            strSport: "Soccer",
-            strLeagueAlternate: "EPL",
-            imageSrc: "/main.jpg",
-          },
-          {
-            idLeague: "11",
-            strLeague: "Premier League 2",
-            strSport: "Soccer",
-            strLeagueAlternate: "EPL 2",
-            imageSrc: "/main-2.jpg",
-          },
-          {
-            idLeague: "12",
-            strLeague: "Serie A",
-            strSport: "Soccer",
-            strLeagueAlternate: "ITA",
-            imageSrc: "/main-3.jpg",
-          },
-          {
-            idLeague: "2",
-            strLeague: "La Liga",
-            strSport: "Soccer",
-            strLeagueAlternate: "Primera Division",
-            imageSrc: "/sport.jpg",
-          },
-        ]),
-        setSelectedSport: vi.fn(),
       });
 
       render(LeaguesCatalog);
@@ -216,6 +198,7 @@ describe("LeaguesCatalog", () => {
             strLeague: "Main Rail League",
             strSport: "Tennis",
             strLeagueAlternate: "Alternate MRL",
+            alternateTags: ["Alternate MRL"],
             imageSrc: "/m.jpg",
           },
         ]),
@@ -266,7 +249,7 @@ describe("LeaguesCatalog", () => {
 
       render(LeaguesCatalog);
 
-      expect(within(document.body).getAllByText("All sports").length).toBeGreaterThan(0);
+      expect(within(document.body).getByRole("combobox")).toBeTruthy();
     });
 
     it("shows a loading skeleton when leagues are fetching", () => {
@@ -398,7 +381,7 @@ describe("LeaguesCatalog", () => {
       expect(within(document.body).getAllByText("Cached League").length).toBeGreaterThanOrEqual(1);
     });
 
-    it("shows designed empty state for active sport filter with reset action", () => {
+    it("shows designed empty state for active sport filter with reset action", async () => {
       mockUseLeaguesCatalogDataViewModel.mockReturnValue({
         leaguesQuery: {
           isLoading: shallowRef(false),
@@ -407,29 +390,31 @@ describe("LeaguesCatalog", () => {
         },
         heroItem: shallowRef(null),
         heroImageSrc: "/hero.jpg",
-        leagueItems: shallowRef([]),
+        leagueItems: shallowRef([
+          {
+            idLeague: "10",
+            strLeague: "Main Rail League",
+            strSport: "Tennis",
+            strLeagueAlternate: "Alternate MRL",
+            imageSrc: "/m.jpg",
+          },
+        ]),
         visibleLeagueItems: shallowRef([]),
         sportLeagueGroups: shallowRef([]),
         sportFilterOptions: shallowRef([
           { value: "all", label: "All sports" },
           { value: "soccer", label: "Soccer" },
         ]),
-        selectedSport: shallowRef("soccer"),
-        isSportFilterActive: shallowRef(true),
-      });
-
-      mockUseSportFilter.mockReturnValue({
-        sportFilterOptions: shallowRef([
-          { value: "all", label: "All sports" },
-          { value: "soccer", label: "Soccer" },
-        ]),
-        selectedSport: shallowRef("soccer"),
-        isSportFilterActive: shallowRef(true),
-        visibleItems: shallowRef([]),
-        setSelectedSport: vi.fn(),
+        selectedSport: shallowRef("all"),
+        isSportFilterActive: shallowRef(false),
       });
 
       render(LeaguesCatalog);
+      const sportFilterNativeSelect = within(document.body)
+        .getAllByRole("combobox", { hidden: true })
+        .find((element): element is HTMLSelectElement => element.tagName === "SELECT");
+      expect(sportFilterNativeSelect).toBeTruthy();
+      await fireEvent.update(sportFilterNativeSelect!, "soccer");
 
       expect(within(document.body).getByText("No leagues match this sport filter")).toBeTruthy();
       expect(
@@ -438,6 +423,92 @@ describe("LeaguesCatalog", () => {
         ),
       ).toBeTruthy();
       expect(within(document.body).getByRole("button", { name: "Show all sports" })).toBeTruthy();
+    });
+
+    it("selects a league and renders a loaded season badge preview", async () => {
+      mockUseLeaguesCatalogDataViewModel.mockReturnValue({
+        leaguesQuery: {
+          isLoading: shallowRef(false),
+          isError: shallowRef(false),
+          refetch: vi.fn(),
+        },
+        heroItem: shallowRef(null),
+        heroImageSrc: "/hero.jpg",
+        leagueItems: shallowRef([
+          {
+            idLeague: "10",
+            strLeague: "Main Rail League",
+            strSport: "Tennis",
+            strLeagueAlternate: "Alternate MRL",
+            imageSrc: "/m.jpg",
+          },
+        ]),
+        visibleLeagueItems: shallowRef([
+          {
+            idLeague: "10",
+            strLeague: "Main Rail League",
+            strSport: "Tennis",
+            strLeagueAlternate: "Alternate MRL",
+            imageSrc: "/m.jpg",
+          },
+        ]),
+        sportLeagueGroups: shallowRef([]),
+        sportFilterOptions: shallowRef([
+          { value: "all", label: "All sports" },
+          { value: "soccer", label: "Soccer" },
+        ]),
+        selectedSport: shallowRef("all"),
+        isSportFilterActive: shallowRef(false),
+      });
+
+      mockUseLeagueBadgeLookup.mockReturnValue({
+        selectedLeagueId: shallowRef("10"),
+        selectedLeague: shallowRef({
+          idLeague: "10",
+          strLeague: "Main Rail League",
+          strSport: "Tennis",
+          strLeagueAlternate: "Alternate MRL",
+          imageSrc: "/m.jpg",
+          alternateLabel: "Alternate MRL",
+          imageAlt: "League image",
+        }),
+        badgesQuery: {
+          data: shallowRef([
+            {
+              season: "2024-2025",
+              badgeUrl: "/badge.png",
+            },
+          ]),
+          isLoading: shallowRef(false),
+          isError: shallowRef(false),
+        },
+        primaryBadge: shallowRef({
+          season: "2024-2025",
+          badgeUrl: "/badge.png",
+        }),
+        badgePreviewAssets: shallowRef([
+          {
+            imageSrc: "/badge.png",
+            imageAlt: "Season badge for Main Rail League",
+            strSeason: "2024-2025",
+          },
+        ]),
+        badgePreviewAsset: shallowRef({
+          imageSrc: "/badge.png",
+          imageAlt: "Season badge for Main Rail League",
+          strSeason: "2024-2025",
+        }),
+        selectLeague: vi.fn(),
+        clearSelectedLeague: vi.fn(),
+      });
+
+      render(LeaguesCatalog);
+      expect(
+        within(document.body).getByRole("dialog", { name: "League badge lookup result" }),
+      ).toBeTruthy();
+      expect(within(document.body).getByAltText("Season badge for Main Rail League")).toBeTruthy();
+      expect(within(document.body).getByText("2024")).toBeTruthy();
+      expect(within(document.body).getByText("2025")).toBeTruthy();
     });
   });
 

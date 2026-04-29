@@ -6,7 +6,7 @@ type UseRailSnapOptions = {
   getCardOffsets: CardOffsetsGetter;
   onSnapStart?: () => void;
   onSnapEnd?: () => void;
-  clearMomentum?: () => void;
+  clearWheelAnimation?: () => void;
 };
 
 const SNAP_IDLE_MS = 280;
@@ -96,7 +96,7 @@ export function useRailSnap(options: UseRailSnapOptions) {
       return;
     }
 
-    options.clearMomentum?.();
+    options.clearWheelAnimation?.();
     isSnapping = true;
     options.onSnapStart?.();
 

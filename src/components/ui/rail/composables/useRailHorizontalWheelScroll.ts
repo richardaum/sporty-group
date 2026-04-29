@@ -1,6 +1,6 @@
 type ScrollElementGetter = () => HTMLElement | null;
 
-type UseRailWheelMomentumOptions = {
+type UseRailHorizontalWheelScrollOptions = {
   getScrollElement: ScrollElementGetter;
   onWheelActivity?: () => void;
 };
@@ -8,11 +8,11 @@ type UseRailWheelMomentumOptions = {
 const WHEEL_MAX_STEP_PX = 88;
 const WHEEL_EASING = 0.3;
 
-export function useRailWheelMomentum(options: UseRailWheelMomentumOptions) {
+export function useRailHorizontalWheelScroll(options: UseRailHorizontalWheelScrollOptions) {
   let wheelTargetLeft: number | null = null;
   let wheelRafId: number | null = null;
 
-  function clearMomentum() {
+  function clearWheelAnimation() {
     if (wheelRafId !== null) {
       window.cancelAnimationFrame(wheelRafId);
       wheelRafId = null;
@@ -84,6 +84,6 @@ export function useRailWheelMomentum(options: UseRailWheelMomentumOptions) {
 
   return {
     onWheel,
-    clearMomentum,
+    clearWheelAnimation,
   };
 }

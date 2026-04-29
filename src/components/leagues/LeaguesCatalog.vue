@@ -1,19 +1,27 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, shallowRef } from "vue";
 import UIRailTrack from "@/components/ui/rail/UIRailTrack.vue";
 import UITypography from "@/components/ui/UITypography.vue";
 import UIButton from "@/components/ui/UIButton.vue";
 import UISelect from "@/components/ui/UISelect.vue";
 import UIEmptyState from "@/components/ui/UIEmptyState.vue";
 import UIHero from "@/components/ui/UIHero.vue";
+import UIBadgeLookup from "@/components/ui/UIBadgeLookup.vue";
+import UIDialog from "@/components/ui/UIDialog.vue";
 import LeagueCard from "@/components/leagues/LeagueCard.vue";
 import LeaguesCatalogSkeleton from "@/components/leagues/LeaguesCatalogSkeleton.vue";
 import LeaguesSearchOverlay from "@/components/leagues/LeaguesSearchOverlay.vue";
-import { useLeaguesCatalogDataViewModel } from "@/composables/useLeaguesCatalogDataViewModel";
+import {
+  getHeroDescription,
+  getLeagueKey,
+  getSportLeagueKey,
+  useLeaguesCatalogDataViewModel,
+} from "@/composables/useLeaguesCatalogDataViewModel";
 import { useLeaguesSearchOverlay } from "@/composables/useLeaguesSearchOverlay";
 import { useSportFilter } from "@/composables/useSportFilter";
-import { toSportLeagueGroups } from "@/composables/useSportLeagueGroups";
+import { useSportLeagueGroups } from "@/composables/useSportLeagueGroups";
 import { useHasScrolled } from "@/composables/useHasScrolled";
+import { useLeagueBadgeLookup } from "@/composables/useLeagueBadgeLookup";
 import { PhMagnifyingGlass } from "@phosphor-icons/vue";
 
 const { leaguesQuery, heroImageSrc, leagueItems } = useLeaguesCatalogDataViewModel();
@@ -26,29 +34,37 @@ type LeagueItem = (typeof leagueItems.value)[number];
 const { hasScrolled } = useHasScrolled();
 
 const visibleLeagueItems = computed(() => visibleItems.value);
+const {
+  selectedLeagueId,
+  selectedLeague,
+  badgesQuery,
+  badgePreviewAssets,
+  badgePreviewAsset,
+  selectLeague,
+  clearSelectedLeague,
+} = useLeagueBadgeLookup(() => visibleLeagueItems.value);
+const isBadgeLookupModalOpen = shallowRef(false);
 const heroItem = computed(() =>
   isSportFilterActive.value ? null : (visibleLeagueItems.value[0] ?? null),
 );
-const sportLeagueGroups = computed(() => toSportLeagueGroups(visibleLeagueItems.value));
+const { sportLeagueGroups } = useSportLeagueGroups(visibleLeagueItems);
 
 function asLeagueItem(item: unknown): LeagueItem {
   return item as LeagueItem;
 }
 
-function getLeagueKey(item: unknown): string {
-  return asLeagueItem(item).idLeague;
-}
-
-function getSportLeagueKey(sport: string, item: unknown): string {
-  return `${sport}-${asLeagueItem(item).idLeague}`;
-}
-
-function getHeroDescription(item: LeagueItem): string {
-  return `${item.strSport} league catalog from TheSportsDB. Alternate title: ${item.strLeagueAlternate}.`;
-}
-
 function resetSportFilter() {
   selectedSport.value = "all";
+}
+
+function onLeagueSelect(leagueId: string) {
+  selectLeague(leagueId);
+  isBadgeLookupModalOpen.value = true;
+}
+
+function closeBadgeLookupModal() {
+  isBadgeLookupModalOpen.value = false;
+  clearSelectedLeague();
 }
 </script>
 
@@ -110,10 +126,14 @@ function resetSportFilter() {
             aria-label="Scrollable leagues list"
             scrollbar-skin="dark"
             card-width="narrow"
-            :get-key="getLeagueKey"
+            :get-key="(item) => getLeagueKey(asLeagueItem(item))"
           >
             <template #default="{ item }">
-              <LeagueCard :item="asLeagueItem(item)" />
+              <LeagueCard
+                :item="asLeagueItem(item)"
+                :is-selected="selectedLeagueId === asLeagueItem(item).idLeague"
+                @select="onLeagueSelect"
+              />
             </template>
           </UIRailTrack>
         </section>
@@ -132,10 +152,14 @@ function resetSportFilter() {
             :aria-label="`${group.sport} horizontal rail`"
             scrollbar-skin="dark"
             card-width="narrow"
-            :get-key="(item) => getSportLeagueKey(group.sport, item)"
+            :get-key="(item) => getSportLeagueKey(group.sport, asLeagueItem(item))"
           >
             <template #default="{ item }">
-              <LeagueCard :item="asLeagueItem(item)" />
+              <LeagueCard
+                :item="asLeagueItem(item)"
+                :is-selected="selectedLeagueId === asLeagueItem(item).idLeague"
+                @select="onLeagueSelect"
+              />
             </template>
           </UIRailTrack>
         </section>
@@ -152,6 +176,7 @@ function resetSportFilter() {
 
       <UIEmptyState
         v-else-if="isSportFilterActive"
+        variant="large"
         title="No leagues match this sport filter"
         description="Try another sport, or reset the filter to browse every league."
         action-label="Show all sports"
@@ -168,6 +193,28 @@ function resetSportFilter() {
       :items="visibleLeagueItems"
       @close-search="closeSearchOverlay"
     />
+
+    <UIDialog
+      :is-open="isBadgeLookupModalOpen || Boolean(selectedLeagueId)"
+      aria-label="League badge lookup result"
+      fit-to-content
+      surface="emphasized"
+      @close="closeBadgeLookupModal"
+    >
+      <UIBadgeLookup
+        title=""
+        :has-selection="Boolean(selectedLeagueId)"
+        :selected-label="selectedLeague?.strLeague || ''"
+        :is-loading="badgesQuery.isLoading.value"
+        :is-error="badgesQuery.isError.value"
+        :preview-asset="badgePreviewAsset"
+        :preview-assets="badgePreviewAssets"
+        idle-message="Select a league card to load its season badge."
+        loading-message="Loading badge for {label}..."
+        error-message="Could not load a badge right now. Try selecting the league again."
+        empty-result-message="No season badge is available for {label}."
+      />
+    </UIDialog>
   </div>
 </template>
 
