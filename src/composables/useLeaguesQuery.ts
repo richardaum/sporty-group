@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/vue-query";
-import { fetchAllLeagues } from "../api/sportsDb";
+import { fetchAllLeagues } from "@/api/sportsDb";
 
 export function useLeaguesQuery() {
   return useQuery({

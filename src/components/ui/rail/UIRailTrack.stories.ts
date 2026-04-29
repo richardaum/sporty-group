@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import UICard from "../UICard.vue";
-import UITypography from "../UITypography.vue";
-import UIRailTrack from "./UIRailTrack.vue";
+import UICard from "@/components/ui/UICard.vue";
+import UITypography from "@/components/ui/UITypography.vue";
+import UIRailTrack from "@/components/ui/rail/UIRailTrack.vue";
 
 interface TrackStoryItem {
   id: string;

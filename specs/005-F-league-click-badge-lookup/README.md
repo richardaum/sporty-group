@@ -33,12 +33,13 @@ Enable league interaction that triggers season-badge retrieval and displays a ba
 
 ## UI/UX Direction
 
-1. Aesthetic philosophy: Scandinavian with clear selection and result feedback.
-2. Clicked/selected league state must be visually distinct from unselected items.
-3. Badge display should appear in a predictable location to avoid layout confusion.
-4. Mobile-first behavior: badge area should stack naturally below list content on narrow screens.
-5. Accessibility baseline: selected state and badge availability must not rely on color alone.
-6. Motion baseline: use subtle reveal for badge updates; honor reduced-motion settings.
+1. UI/UX foundation reference: follow `001-NF-design-system-foundation` as the canonical baseline for tokens, component primitives, interaction states, spacing, radius, and motion.
+2. Aesthetic extension: badge lookup flow should inherit the same dark-first, content-dense visual language established in `001`.
+3. Clicked/selected league state must be visually distinct from unselected items using shared state treatment patterns from `001`.
+4. Badge display should appear in a predictable location to avoid layout confusion while keeping panel/card treatments consistent with `001` primitives.
+5. Mobile-first behavior: badge area should stack naturally below list content on narrow screens using responsive spacing/layout principles from `001`.
+6. Accessibility baseline: selected state and badge availability must not rely on color alone, aligned with `001` accessibility defaults.
+7. Motion baseline: use subtle reveal for badge updates and honor `prefers-reduced-motion` requirements defined in `001`.
 
 ## Implementation Plan
 

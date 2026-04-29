@@ -22,6 +22,24 @@
 - Keep root/view components focused on composition; move feature logic to components/composables.
 - Prefer explicit, typed props/emits contracts.
 
+## ViewModel Layering (Vue)
+
+- For non-trivial UI features, organize feature logic into focused composable ViewModels:
+  - `use<Feature>DataViewModel`: server/query state + domain-to-UI mapping.
+  - `use<Feature>ScreenViewModel`: screen-level interaction state (open/close, global shortcuts, mode toggles).
+  - `use<Feature>OverlayViewModel` (optional): overlay/dialog local interaction state (focus lifecycle, local filters, clear/reset).
+  - `use<Feature>PresentationModel` (optional): pure mappers for UI-safe display fields (fallback labels, alt text, formatted strings).
+- Keep `.vue` components primarily declarative: rendering, event wiring, and accessibility markup.
+- Prefer derived state in ViewModels (`computed`) and keep side effects localized (watchers/listeners near the owning ViewModel).
+- Name outputs by intent (`mainRailItems`, `sportRails`, `isSearchModeOpen`) rather than generic names (`items`, `state`).
+- Avoid compatibility aliases once migration is complete; keep one canonical contract per feature.
+
+## Imports
+
+- Prefer absolute imports rooted at `@/` for all internal modules under `src/`.
+- Do not use parent-relative imports (`../` or `./`) for internal app modules when an `@/` path is available.
+- Keep external package imports unchanged (for example `vue`, `@tanstack/vue-query`).
+
 ## Styling Rules
 
 - Component-specific styles must live in the component itself (`<style>` in `.vue` files).
@@ -36,6 +54,17 @@
 - Header and main content must share this same left/right alignment.
 - Put viewport breathing space in shell/wrapper padding, not by shifting inner sections.
 - Keep component spacing internal (card/body padding), without changing page edge alignment.
+- Define shared layout tokens once (for example `--layout-max-width` and `--layout-inline-pad`) and consume the same tokens in both header and main wrappers.
+- Do not use breakpoint-specific "magic numbers" to realign header/content after the fact; fix the shared container contract instead.
+- If layout alignment depends on DOM measurements, document why static CSS tokens were insufficient and keep the fallback logic minimal.
+
+## Layout Alignment Checklist (PR)
+
+- Header wrapper and main wrapper use the same max-width and inline-padding source.
+- Hero/first content section starts on the same left edge as header content.
+- Alignment is validated at three ranges: small, medium/intermediate, and large desktop.
+- Sticky/scrolled header state must not change horizontal alignment.
+- Any intentional offset is documented inline in code and noted in the PR description.
 
 ## Alignment Exceptions
 

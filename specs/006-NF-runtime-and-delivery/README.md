@@ -30,6 +30,11 @@ Ensure reviewers can run the project successfully from a public repository submi
 1. Private deployment pipelines.
 2. Production-grade hosting requirements.
 
+## UI/UX Alignment Constraint
+
+1. Any UI-affecting fix or polish applied during runtime/delivery hardening must keep `001-NF-design-system-foundation` as the mandatory design baseline.
+2. Delivery validation should reject ad-hoc visual changes that bypass shared tokens, primitives, accessibility states, or motion rules defined in `001`.
+
 ## Implementation Plan
 
 1. Verify project scripts and dependencies so `install`, `dev`, `build`, and `preview` flows work from a fresh clone.

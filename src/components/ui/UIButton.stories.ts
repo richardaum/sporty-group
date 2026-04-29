@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import { PhArrowRight, PhPlus } from "@phosphor-icons/vue";
-import Button from "./UIButton.vue";
+import { PhArrowRight, PhMagnifyingGlass, PhPlus } from "@phosphor-icons/vue";
+import Button from "@/components/ui/UIButton.vue";
 
 const meta = {
   title: "Design System/Button",
@@ -36,6 +36,26 @@ export const Ghost: Story = {
   args: {
     variant: "ghost",
   },
+};
+
+export const Surface: Story = {
+  args: {
+    variant: "surface",
+  },
+  render: (args) => ({
+    components: { Button, PhMagnifyingGlass },
+    setup() {
+      return { args };
+    },
+    template: `
+      <Button v-bind="args" aria-label="Open search">
+        <template #leading>
+          <PhMagnifyingGlass :size="16" />
+        </template>
+        <span>⌘K</span>
+      </Button>
+    `,
+  }),
 };
 
 export const Sizes: Story = {

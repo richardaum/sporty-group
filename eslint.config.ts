@@ -33,5 +33,22 @@ export default [
     files: ["**/*.{spec,test}.{js,jsx,ts,tsx,vue}"],
     ...testingLibrary.configs["flat/vue"],
   },
+  {
+    files: ["src/**/*.{ts,tsx,vue}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              regex: "^\\.\\./",
+              message:
+                "Use alias imports com @/ para modulos internos do projeto, evitando imports relativos entre pastas.",
+            },
+          ],
+        },
+      ],
+    },
+  },
   eslintConfigPrettier,
 ];

@@ -3,7 +3,7 @@ defineOptions({
   name: "UIButton",
 });
 
-type ButtonVariant = "primary" | "secondary" | "ghost";
+type ButtonVariant = "primary" | "secondary" | "ghost" | "surface";
 type ButtonSize = "sm" | "md" | "lg";
 
 withDefaults(
@@ -106,6 +106,22 @@ withDefaults(
 
 .ui-button-ghost:hover {
   background: color-mix(in oklab, var(--color-brand-500) 20%, transparent);
+}
+
+.ui-button-surface {
+  min-height: 2.5rem;
+  padding: 0 var(--space-3);
+  background: rgba(18, 18, 18, 0.9);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+.ui-button-surface:hover {
+  border-color: var(--color-border-strong);
+}
+
+.ui-button-surface:active {
+  background: rgba(18, 18, 18, 0.95);
 }
 
 .ui-button-sm {

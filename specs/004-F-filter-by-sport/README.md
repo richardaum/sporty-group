@@ -33,12 +33,13 @@ Allow users to filter leagues by sport type with a dropdown control.
 
 ## UI/UX Direction
 
-1. Aesthetic philosophy: Scandinavian aligned with list/search controls.
-2. Dropdown control should follow the same visual rhythm as the search input.
-3. Mobile-first behavior: filter control remains easy to operate with touch.
-4. State clarity: selected sport is always explicit and easy to reset.
-5. Accessibility baseline: keyboard navigation and visible focus styles are required.
-6. Motion baseline: state changes should prioritize clarity over animation.
+1. UI/UX foundation reference: follow `001-NF-design-system-foundation` as the authoritative baseline for tokens, components, interaction states, spacing, radius, and motion.
+2. Aesthetic extension: filter UI should inherit the same dark-first, condensed, content-focused visual language established in `001`.
+3. Dropdown control should follow the same visual rhythm as the search input, reusing shared select/input patterns from `001`.
+4. Mobile-first behavior: filter control remains easy to operate with touch using sizing and spacing scales from `001`.
+5. State clarity: selected sport is always explicit and easy to reset, preserving state affordance patterns defined in `001`.
+6. Accessibility baseline: keyboard navigation and visible focus styles are required, aligned with `001` accessibility defaults.
+7. Motion baseline: state changes should prioritize clarity over animation and honor `prefers-reduced-motion` per `001`.
 
 ## Implementation Plan
 

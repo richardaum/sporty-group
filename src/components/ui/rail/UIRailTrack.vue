@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, watch } from "vue";
 import type { ComponentPublicInstance } from "vue";
-import UIScrollbar from "./UIScrollbar.vue";
-import { useRailBleed } from "./composables/useRailBleed";
-import { useRailNavigation } from "./composables/useRailNavigation";
-import { useRailSnap } from "./composables/useRailSnap";
-import { useRailWheelMomentum } from "./composables/useRailWheelMomentum";
+import UIScrollbar from "@/components/ui/UIScrollbar.vue";
+import { useRailBleed } from "@/components/ui/rail/composables/useRailBleed";
+import { useRailNavigation } from "@/components/ui/rail/composables/useRailNavigation";
+import { useRailSnap } from "@/components/ui/rail/composables/useRailSnap";
+import { useRailWheelMomentum } from "@/components/ui/rail/composables/useRailWheelMomentum";
 
 defineOptions({
   name: "UIRailTrack",
@@ -341,8 +341,6 @@ watch(
 .ui-rail-track-card {
   flex: 0 0 var(--rail-card-width);
   min-width: 0;
-  aspect-ratio: 5 / 6;
-  overflow: hidden;
   scroll-snap-align: start;
   opacity: 1;
   transition: opacity 200ms ease;
@@ -366,5 +364,29 @@ watch(
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+@media (max-width: 64rem) {
+  .ui-rail-track-list {
+    --rail-visible-full-cards: 4;
+    --rail-visible-partial-card: 0.25;
+    --rail-visible-gaps: 4;
+  }
+}
+
+@media (max-width: 48rem) {
+  .ui-rail-track-list {
+    --rail-visible-full-cards: 3;
+    --rail-visible-partial-card: 0.2;
+    --rail-visible-gaps: 3;
+  }
+}
+
+@media (max-width: 36rem) {
+  .ui-rail-track-list {
+    --rail-visible-full-cards: 2;
+    --rail-visible-partial-card: 0.15;
+    --rail-visible-gaps: 2;
+  }
 }
 </style>

@@ -1,6 +1,6 @@
 import { shallowRef } from "vue";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import Select from "./UISelect.vue";
+import Select from "@/components/ui/UISelect.vue";
 
 const options = [
   { value: "all", label: "All sports" },

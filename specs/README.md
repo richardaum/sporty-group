@@ -59,6 +59,7 @@ Sequencing rules:
 
 1. Implement specs in listed numeric order.
 2. For specs with UI/UX impact, use `/frontend-design` during implementation.
+3. For specs with UI/UX impact, treat `001-NF-design-system-foundation` as the mandatory visual and interaction baseline.
 
 ## NF Index
 
@@ -79,6 +80,7 @@ Sequencing rules:
 5. Documentation and transparency are cross-cutting acceptance criteria applied to all delivered specs.
 6. Runtime and delivery checks run near final integration.
 7. For specs with UI/UX impact, use `/frontend-design` during implementation.
+8. Any UI/UX decision in downstream specs must reference and remain consistent with `001-NF-design-system-foundation`.
 
 ## Spec Status Values
 

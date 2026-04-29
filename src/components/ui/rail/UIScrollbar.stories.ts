@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import Scrollbar from "./UIScrollbar.vue";
-import Card from "../UICard.vue";
+import Scrollbar from "@/components/ui/UIScrollbar.vue";
+import Card from "@/components/ui/UICard.vue";
 
 const meta = {
   title: "Design System/Scrollbar",

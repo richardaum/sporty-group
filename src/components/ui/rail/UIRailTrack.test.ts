@@ -2,7 +2,7 @@
 import { fireEvent, render, within } from "@testing-library/vue";
 import { h, nextTick } from "vue";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import UIRailTrack from "./UIRailTrack.vue";
+import UIRailTrack from "@/components/ui/rail/UIRailTrack.vue";
 
 type ScrollToOptionsLike = {
   left?: number;

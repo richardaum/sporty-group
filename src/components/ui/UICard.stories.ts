@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
-import Card from "./UICard.vue";
-import Button from "./UIButton.vue";
+import Card from "@/components/ui/UICard.vue";
+import Button from "@/components/ui/UIButton.vue";
 
 const meta = {
   title: "Design System/Card",

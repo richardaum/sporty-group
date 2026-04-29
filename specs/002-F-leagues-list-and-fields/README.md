@@ -36,12 +36,13 @@ Render the core leagues catalog from TheSportsDB with all required assignment fi
 
 ## UI/UX Direction
 
-1. Visual direction: dark-only cinematic sports catalog with a content-first layout.
-2. Mobile-first baseline: start at 375px and scale to larger breakpoints.
-3. Hero and rails: use a prominent hero section plus horizontal rails with 16:9 league cards.
-4. League card hierarchy: `strLeague` as primary text with `strSport` and `strLeagueAlternate` as secondary metadata.
-5. Accessibility baseline: minimum 44x44 touch targets, visible keyboard focus, and readable mobile typography.
-6. Motion baseline: subtle transitions with `prefers-reduced-motion` support.
+1. UI/UX foundation reference: follow `001-NF-design-system-foundation` as the single source of truth for tokens, component primitives, states, spacing, radius, shadow, and motion behavior.
+2. Visual direction: extend the `001` dark-first, content-dense catalog language for league browsing surfaces.
+3. Mobile-first baseline: start at 375px and scale to larger breakpoints using the same spacing and typography token rhythm defined in `001`.
+4. Hero and rails: use a prominent hero section plus horizontal rails with 16:9 league cards, reusing shared primitives and interaction patterns from `001`.
+5. League card hierarchy: `strLeague` as primary text with `strSport` and `strLeagueAlternate` as secondary metadata, respecting the typography hierarchy established in `001`.
+6. Accessibility baseline: minimum 44x44 touch targets, visible keyboard focus, and readable mobile typography aligned with `001` accessibility defaults.
+7. Motion baseline: subtle transitions with `prefers-reduced-motion` support, matching `001` reduced-motion requirements.
 
 ## Implementation Plan
 

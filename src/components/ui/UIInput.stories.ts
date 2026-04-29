@@ -1,7 +1,7 @@
 import { shallowRef } from "vue";
 import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { PhMagnifyingGlass, PhXCircle } from "@phosphor-icons/vue";
-import Input from "./UIInput.vue";
+import Input from "@/components/ui/UIInput.vue";
 
 const meta = {
   title: "Design System/Input",
