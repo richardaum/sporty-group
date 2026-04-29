@@ -79,30 +79,16 @@ describe("useLeaguesCatalogDataViewModel", () => {
     wrapper.unmount();
   });
 
-  it("supports sport-filtered visible items for combined search/filter composition", () => {
+  it("keeps league items available for catalog-level sport filtering", () => {
     const items: LeagueListItem[] = [
-      league("1", "Premier League", "Soccer", "EPL"),
+      league("1", "Premier League", " Soccer ", "EPL"),
       league("2", "NFL", "American Football", "NFL"),
-      league("3", "La Liga", "Soccer", "Primera"),
+      league("3", "La Liga", "soccer", "Primera"),
     ];
     const wrapper = mountWithData(items);
 
-    expect(wrapper.vm.visibleLeagueItems).toHaveLength(3);
-    expect(wrapper.vm.sportFilterOptions.map((option: { value: string }) => option.value)).toEqual([
-      "all",
-      "American Football",
-      "Soccer",
-    ]);
-
-    wrapper.vm.setSelectedSport("Soccer");
-    expect(wrapper.vm.selectedSport).toBe("Soccer");
-    expect(
-      wrapper.vm.visibleLeagueItems.map((item: { strLeague: string }) => item.strLeague),
-    ).toEqual(["Premier League", "La Liga"]);
+    expect(wrapper.vm.leagueItems).toHaveLength(3);
     expect(wrapper.vm.heroItem?.strLeague).toBe("Premier League");
-
-    wrapper.vm.setSelectedSport("all");
-    expect(wrapper.vm.visibleLeagueItems).toHaveLength(3);
 
     wrapper.unmount();
   });

@@ -32,6 +32,9 @@ withDefaults(
     disabled?: boolean;
     hasError?: boolean;
     errorText?: string;
+    dropdownDirection?: "top" | "bottom";
+    context?: "default" | "header";
+    contentWidth?: "trigger" | "content";
   }>(),
   {
     id: "",
@@ -40,6 +43,9 @@ withDefaults(
     disabled: false,
     hasError: false,
     errorText: "",
+    dropdownDirection: "bottom",
+    context: "default",
+    contentWidth: "trigger",
   },
 );
 </script>
@@ -52,7 +58,10 @@ withDefaults(
       <SelectTrigger
         :id="id || undefined"
         class="ui-select-trigger"
-        :class="{ 'ui-select-trigger-error': hasError }"
+        :class="{
+          'ui-select-trigger-error': hasError,
+          'ui-select-trigger-header': context === 'header',
+        }"
         aria-label="Select an option"
         :aria-invalid="hasError"
         :aria-describedby="id ? `${id}-hint` : undefined"
@@ -64,8 +73,18 @@ withDefaults(
       </SelectTrigger>
 
       <SelectPortal>
-        <SelectContent class="ui-select-content">
-          <SelectViewport>
+        <SelectContent
+          class="ui-select-content"
+          :class="{
+            'ui-select-content-header': context === 'header',
+            'ui-select-content-trigger-width': contentWidth === 'trigger',
+            'ui-select-content-content-width': contentWidth === 'content',
+          }"
+          position="popper"
+          :side="dropdownDirection"
+          :side-offset="8"
+        >
+          <SelectViewport class="ui-select-viewport">
             <SelectItem
               v-for="option in options"
               :key="option.value"
@@ -132,6 +151,14 @@ withDefaults(
   background: var(--color-bg-elevated);
 }
 
+.ui-select-trigger-header {
+  background: color-mix(in oklab, var(--color-bg-surface) 94%, black);
+}
+
+.ui-select-trigger-header:hover {
+  background: var(--color-bg-surface);
+}
+
 .ui-select-trigger:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
@@ -147,13 +174,40 @@ withDefaults(
   background: var(--color-bg-subtle);
 }
 
+.ui-select-message-error {
+  margin: 0;
+  color: var(--color-error);
+  font-size: 0.875rem;
+}
+</style>
+
+<style>
 .ui-select-content {
-  background: var(--color-bg-elevated);
+  background: color-mix(in oklab, var(--color-bg-elevated) 82%, transparent);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-soft);
   overflow: hidden;
   z-index: 50;
+  backdrop-filter: blur(10px);
+}
+
+.ui-select-content-header {
+  background: color-mix(in oklab, var(--color-bg-surface) 84%, transparent);
+}
+
+.ui-select-content-trigger-width {
+  width: var(--radix-select-trigger-width);
+  min-width: var(--radix-select-trigger-width);
+}
+
+.ui-select-content-content-width {
+  width: max-content;
+  min-width: max(var(--radix-select-trigger-width), 12rem);
+}
+
+.ui-select-viewport {
+  background: inherit;
 }
 
 .ui-select-item {
@@ -165,11 +219,5 @@ withDefaults(
 
 .ui-select-item[data-highlighted] {
   background: color-mix(in oklab, var(--color-brand-500) 18%, var(--color-bg-subtle));
-}
-
-.ui-select-message-error {
-  margin: 0;
-  color: var(--color-error);
-  font-size: 0.875rem;
 }
 </style>

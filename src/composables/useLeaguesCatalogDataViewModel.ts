@@ -1,4 +1,4 @@
-import { computed, shallowRef } from "vue";
+import { computed } from "vue";
 import type { LeagueListItem } from "@/api/sportsDb";
 import { useLeaguesQuery } from "@/composables/useLeaguesQuery";
 import {
@@ -19,13 +19,6 @@ export interface SportLeagueGroupViewModel {
   sport: string;
   items: LeaguePresentationItem[];
 }
-
-export interface SportFilterOption {
-  value: string;
-  label: string;
-}
-
-const ALL_SPORTS_FILTER_VALUE = "all";
 
 const leagueImages = [
   league01,
@@ -63,43 +56,14 @@ function toSportLeagueGroups(items: LeaguePresentationItem[]): SportLeagueGroupV
 export function useLeaguesCatalogDataViewModel() {
   const leaguesQuery = useLeaguesQuery();
   const leagueItems = computed(() => toLeagueItems(leaguesQuery.data.value ?? []));
-  const selectedSport = shallowRef(ALL_SPORTS_FILTER_VALUE);
-
-  const sportFilterOptions = computed<SportFilterOption[]>(() => {
-    const sports = Array.from(
-      new Set(leagueItems.value.map((item) => item.strSport?.trim() || "Other")),
-    ).sort((left, right) => left.localeCompare(right));
-
-    return [
-      { value: ALL_SPORTS_FILTER_VALUE, label: "All sports" },
-      ...sports.map((sport) => ({ value: sport, label: sport })),
-    ];
-  });
-
-  const visibleLeagueItems = computed(() => {
-    if (selectedSport.value === ALL_SPORTS_FILTER_VALUE) {
-      return leagueItems.value;
-    }
-
-    return leagueItems.value.filter((item) => item.strSport === selectedSport.value);
-  });
-
-  const heroItem = computed(() => visibleLeagueItems.value[0] ?? null);
-  const sportLeagueGroups = computed(() => toSportLeagueGroups(visibleLeagueItems.value));
-
-  function setSelectedSport(sport: string) {
-    selectedSport.value = sport;
-  }
+  const heroItem = computed(() => leagueItems.value[0] ?? null);
+  const sportLeagueGroups = computed(() => toSportLeagueGroups(leagueItems.value));
 
   return {
     leaguesQuery,
     heroItem,
     heroImageSrc: leagueHeroImage,
     leagueItems,
-    visibleLeagueItems,
     sportLeagueGroups,
-    sportFilterOptions,
-    selectedSport,
-    setSelectedSport,
   };
 }
