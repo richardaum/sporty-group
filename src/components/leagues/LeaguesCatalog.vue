@@ -1,41 +1,36 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, shallowRef } from "vue";
-import UICard from "../ui/UICard.vue";
-import UIRailTrack from "../ui/rail/UIRailTrack.vue";
-import UITypography from "../ui/UITypography.vue";
-import { useLeagueCatalogViewModel } from "../../composables/useLeagueCatalogViewModel";
+import UIRailTrack from "@/components/ui/rail/UIRailTrack.vue";
+import UITypography from "@/components/ui/UITypography.vue";
+import UIButton from "@/components/ui/UIButton.vue";
+import LeagueCard from "@/components/leagues/LeagueCard.vue";
+import Hero from "@/components/leagues/Hero.vue";
+import LeaguesCatalogSkeleton from "@/components/leagues/LeaguesCatalogSkeleton.vue";
+import LeaguesSearchOverlay from "@/components/leagues/LeaguesSearchOverlay.vue";
+import { useLeaguesCatalogDataViewModel } from "@/composables/useLeaguesCatalogDataViewModel";
+import { useLeaguesCatalogScreenViewModel } from "@/composables/useLeaguesCatalogScreenViewModel";
+import { useHasScrolled } from "@/composables/useHasScrolled";
+import { PhMagnifyingGlass } from "@phosphor-icons/vue";
 
-const { leaguesQuery, heroItem, heroImageSrc, mainRailItems, sportRails } =
-  useLeagueCatalogViewModel();
-const hasScrolled = shallowRef(false);
-type RailLeagueItem = (typeof mainRailItems.value)[number];
+const { leaguesQuery, heroItem, heroImageSrc, visibleLeagueItems, sportLeagueGroups } =
+  useLeaguesCatalogDataViewModel();
+const { isSearchModeOpen, openSearchOverlay, closeSearchOverlay } =
+  useLeaguesCatalogScreenViewModel();
 
-const skeletonItems = Array.from({ length: 8 }, (_, index) => index);
+type LeagueItem = (typeof visibleLeagueItems.value)[number];
 
-function updateScrollState() {
-  hasScrolled.value = window.scrollY > 16;
+const { hasScrolled } = useHasScrolled();
+
+function asLeagueItem(item: unknown): LeagueItem {
+  return item as LeagueItem;
 }
 
-function asRailLeagueItem(item: unknown): RailLeagueItem {
-  return item as RailLeagueItem;
+function getLeagueKey(item: unknown): string {
+  return asLeagueItem(item).idLeague;
 }
 
-function getMainRailKey(item: unknown): string {
-  return asRailLeagueItem(item).idLeague;
+function getSportLeagueKey(sport: string, item: unknown): string {
+  return `${sport}-${asLeagueItem(item).idLeague}`;
 }
-
-function getSportRailKey(sport: string, item: unknown): string {
-  return `${sport}-${asRailLeagueItem(item).idLeague}`;
-}
-
-onMounted(() => {
-  updateScrollState();
-  window.addEventListener("scroll", updateScrollState, { passive: true });
-});
-
-onUnmounted(() => {
-  window.removeEventListener("scroll", updateScrollState);
-});
 </script>
 
 <template>
@@ -45,44 +40,26 @@ onUnmounted(() => {
         <div>
           <UITypography as="p" variant="titleSm" class="brand-mark">SportBet</UITypography>
         </div>
-        <div>
-          <UITypography as="p" variant="muted" class="top-note">Live leagues catalog</UITypography>
-        </div>
+        <UIButton
+          variant="surface"
+          class="search-overlay-trigger"
+          aria-label="Open league search"
+          @click="openSearchOverlay"
+        >
+          <template #leading>
+            <PhMagnifyingGlass :size="16" aria-hidden="true" />
+          </template>
+          <span class="trigger-shortcut" aria-hidden="true">⌘K</span>
+        </UIButton>
       </div>
     </header>
 
     <main class="app-main">
-      <section
-        v-if="heroItem"
-        class="hero-panel"
-        :style="{ backgroundImage: `url(${heroImageSrc})` }"
-      >
-        <div class="hero-vignette">
-          <UITypography as="p" variant="kicker">Sporty Group</UITypography>
-          <UITypography as="h1" variant="title">{{ heroItem.strLeague }}</UITypography>
-          <UITypography as="p" variant="muted">
-            {{ heroItem.strSport }} league catalog from TheSportsDB. Alternate title:
-            {{ heroItem.strLeagueAlternate }}.
-          </UITypography>
-        </div>
-      </section>
+      <Hero v-if="heroItem" :item="heroItem" :image-src="heroImageSrc" />
 
-      <section v-if="leaguesQuery.isLoading.value" class="rail-shell" aria-label="Loading leagues">
-        <UITypography as="h2" variant="titleSm" class="rail-title">Loading catalog</UITypography>
-        <UIRailTrack
-          :items="skeletonItems"
-          aria-label="Loading leagues skeleton"
-          :scrollable="false"
-          card-width="narrow"
-          :get-key="(_, index) => index"
-        >
-          <template #default>
-            <div class="card-skeleton" />
-          </template>
-        </UIRailTrack>
-      </section>
+      <LeaguesCatalogSkeleton v-if="leaguesQuery.isLoading.value" />
 
-      <section v-else-if="mainRailItems.length" class="catalog-shell">
+      <section v-else-if="visibleLeagueItems.length" class="catalog-shell">
         <p
           v-if="leaguesQuery.isError.value"
           class="status status-error"
@@ -95,86 +72,36 @@ onUnmounted(() => {
         <section class="rail-shell" aria-label="All leagues">
           <UITypography as="h2" variant="titleSm" class="rail-title">All leagues</UITypography>
           <UIRailTrack
-            :items="mainRailItems"
+            :items="visibleLeagueItems"
             aria-label="Scrollable leagues list"
             scrollbar-skin="dark"
             card-width="narrow"
-            :get-key="getMainRailKey"
+            :get-key="getLeagueKey"
           >
             <template #default="{ item }">
-              <UICard interactive>
-                <article class="league-card">
-                  <img
-                    :src="asRailLeagueItem(item).imageSrc"
-                    :alt="`Representative sport image for ${asRailLeagueItem(item).strLeague}`"
-                    class="league-art"
-                    loading="lazy"
-                  />
-                  <div class="league-body">
-                    <UITypography as="h3" variant="titleSm" class="league-title" truncate>
-                      {{ asRailLeagueItem(item).strLeague }}
-                    </UITypography>
-                    <p class="league-meta">
-                      <span class="league-label">Sport</span>
-                      <UITypography as="span" truncate>{{
-                        asRailLeagueItem(item).strSport
-                      }}</UITypography>
-                    </p>
-                    <p class="league-meta">
-                      <span class="league-label">Alternate</span>
-                      <UITypography as="span" truncate>
-                        {{ asRailLeagueItem(item).strLeagueAlternate }}
-                      </UITypography>
-                    </p>
-                  </div>
-                </article>
-              </UICard>
+              <LeagueCard :item="asLeagueItem(item)" />
             </template>
           </UIRailTrack>
         </section>
 
         <section
-          v-for="rail in sportRails"
-          :key="rail.sport"
+          v-for="group in sportLeagueGroups"
+          :key="group.sport"
           class="rail-shell"
-          :aria-label="`${rail.sport} leagues`"
+          :aria-label="`${group.sport} leagues`"
         >
-          <UITypography as="h2" variant="titleSm" class="rail-title">{{ rail.sport }}</UITypography>
+          <UITypography as="h2" variant="titleSm" class="rail-title">{{
+            group.sport
+          }}</UITypography>
           <UIRailTrack
-            :items="rail.items"
-            :aria-label="`${rail.sport} horizontal rail`"
+            :items="group.items"
+            :aria-label="`${group.sport} horizontal rail`"
             scrollbar-skin="dark"
             card-width="narrow"
-            :get-key="(item) => getSportRailKey(rail.sport, item)"
+            :get-key="(item) => getSportLeagueKey(group.sport, item)"
           >
             <template #default="{ item }">
-              <UICard interactive>
-                <article class="league-card">
-                  <img
-                    :src="asRailLeagueItem(item).imageSrc"
-                    :alt="`Representative sport image for ${asRailLeagueItem(item).strLeague}`"
-                    class="league-art"
-                    loading="lazy"
-                  />
-                  <div class="league-body">
-                    <UITypography as="h3" variant="titleSm" class="league-title" truncate>
-                      {{ asRailLeagueItem(item).strLeague }}
-                    </UITypography>
-                    <p class="league-meta">
-                      <span class="league-label">Sport</span>
-                      <UITypography as="span" truncate>{{
-                        asRailLeagueItem(item).strSport
-                      }}</UITypography>
-                    </p>
-                    <p class="league-meta">
-                      <span class="league-label">Alternate</span>
-                      <UITypography as="span" truncate>
-                        {{ asRailLeagueItem(item).strLeagueAlternate }}
-                      </UITypography>
-                    </p>
-                  </div>
-                </article>
-              </UICard>
+              <LeagueCard :item="asLeagueItem(item)" />
             </template>
           </UIRailTrack>
         </section>
@@ -193,6 +120,12 @@ onUnmounted(() => {
         No leagues were returned by the API.
       </p>
     </main>
+
+    <LeaguesSearchOverlay
+      :is-open="isSearchModeOpen"
+      :items="visibleLeagueItems"
+      @close-search="closeSearchOverlay"
+    />
   </div>
 </template>
 
@@ -200,12 +133,15 @@ onUnmounted(() => {
 .app-shell {
   min-height: 100svh;
   background: var(--color-bg-canvas);
+  --layout-max-width: 110rem;
+  --layout-inline-pad: var(--space-4);
 }
 
 .app-main {
-  width: min(100%, 110rem);
+  width: min(100%, var(--layout-max-width));
   margin: 0 auto;
-  padding: var(--space-7) 0 var(--space-6);
+  box-sizing: border-box;
+  padding: var(--space-7) var(--layout-inline-pad) var(--space-6);
   display: grid;
   gap: var(--space-6);
 }
@@ -214,7 +150,8 @@ onUnmounted(() => {
   position: sticky;
   top: 0;
   z-index: 20;
-  padding: var(--space-3) var(--space-4);
+  padding-block: var(--space-3);
+  padding-inline: 0;
   transition: background-color 220ms ease;
 }
 
@@ -225,13 +162,24 @@ onUnmounted(() => {
 }
 
 .top-bar {
-  width: min(100%, 110rem);
+  width: min(100%, var(--layout-max-width));
   margin: 0 auto;
   min-height: 2.75rem;
+  box-sizing: border-box;
+  padding-inline: var(--layout-inline-pad);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
+}
+
+.search-overlay-trigger {
+  justify-self: end;
+}
+
+.trigger-shortcut {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
 }
 
 .brand-mark {
@@ -242,29 +190,6 @@ onUnmounted(() => {
 .top-note {
   font-size: 0.875rem;
   max-width: unset;
-}
-
-.hero-panel {
-  min-height: 70vh;
-  border-radius: var(--radius-lg);
-  background-size: cover;
-  background-position: center;
-  border: 1px solid var(--color-border);
-  overflow: hidden;
-}
-
-.hero-vignette {
-  min-height: 70vh;
-  display: grid;
-  align-content: end;
-  gap: var(--space-3);
-  padding: var(--space-6) var(--space-5);
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.94) 20%,
-    rgba(0, 0, 0, 0.72) 50%,
-    rgba(0, 0, 0, 0.2) 100%
-  );
 }
 
 .catalog-shell {
@@ -280,57 +205,6 @@ onUnmounted(() => {
 .rail-title {
   margin: 0;
   padding-inline: var(--space-1);
-}
-
-.league-card {
-  display: grid;
-  gap: var(--space-3);
-}
-
-.league-art {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border);
-}
-
-.league-title {
-  margin: 0;
-  font-size: 1rem;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-}
-
-.league-body {
-  display: grid;
-  gap: var(--space-2);
-}
-
-.league-meta {
-  margin: 0;
-  color: var(--color-text-secondary);
-  display: grid;
-  gap: var(--space-1);
-}
-
-.league-label {
-  font-size: 0.6875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.card-skeleton {
-  border-radius: var(--radius-lg);
-  aspect-ratio: 16 / 9;
-  background: linear-gradient(
-    110deg,
-    var(--color-bg-surface) 35%,
-    var(--color-bg-elevated) 45%,
-    var(--color-bg-surface) 55%
-  );
-  background-size: 220% 100%;
-  animation: shimmer 1.6s linear infinite;
 }
 
 .status {
@@ -374,21 +248,5 @@ onUnmounted(() => {
 }
 
 @media (min-width: 48rem) {
-  .hero-panel,
-  .hero-vignette {
-    min-height: 76vh;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .card-skeleton {
-    animation: none;
-  }
-}
-
-@keyframes shimmer {
-  to {
-    background-position-x: -220%;
-  }
 }
 </style>
