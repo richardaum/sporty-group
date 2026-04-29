@@ -4,9 +4,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import LeaguesCatalog from "@/components/leagues/LeaguesCatalog.vue";
 
 const mockUseLeaguesCatalogDataViewModel = vi.fn();
+const mockUseSportFilter = vi.fn();
 
 vi.mock("@/composables/useLeaguesCatalogDataViewModel", () => ({
   useLeaguesCatalogDataViewModel: () => mockUseLeaguesCatalogDataViewModel(),
+}));
+
+vi.mock("@/composables/useSportFilter", () => ({
+  useSportFilter: (items: unknown) => mockUseSportFilter(items),
 }));
 
 describe("LeaguesCatalog", () => {
@@ -18,6 +23,17 @@ describe("LeaguesCatalog", () => {
         disconnect() {}
       },
     );
+
+    mockUseSportFilter.mockImplementation((items: unknown) => ({
+      sportFilterOptions: shallowRef([
+        { value: "all", label: "All sports" },
+        { value: "soccer", label: "Soccer" },
+      ]),
+      selectedSport: shallowRef("all"),
+      isSportFilterActive: shallowRef(false),
+      visibleItems: items,
+      setSelectedSport: vi.fn(),
+    }));
   });
 
   afterEach(() => {
@@ -45,42 +61,87 @@ describe("LeaguesCatalog", () => {
         leagueItems: shallowRef([
           {
             idLeague: "1",
-            strLeague: "Premier League",
+            strLeague: "Premier League 1",
             strSport: "Soccer",
             strLeagueAlternate: "EPL",
             imageSrc: "/main.jpg",
           },
+          {
+            idLeague: "11",
+            strLeague: "Premier League 2",
+            strSport: "Soccer",
+            strLeagueAlternate: "EPL 2",
+            imageSrc: "/main-2.jpg",
+          },
+          {
+            idLeague: "12",
+            strLeague: "Serie A",
+            strSport: "Soccer",
+            strLeagueAlternate: "ITA",
+            imageSrc: "/main-3.jpg",
+          },
+          {
+            idLeague: "13",
+            strLeague: "Bundesliga",
+            strSport: "Soccer",
+            strLeagueAlternate: "GER",
+            imageSrc: "/main-4.jpg",
+          },
         ]),
-        visibleLeagueItems: shallowRef([
+        sportLeagueGroups: shallowRef([]),
+        sportFilterOptions: shallowRef([
+          { value: "all", label: "All sports" },
+          { value: "soccer", label: "Soccer" },
+        ]),
+        selectedSport: shallowRef("all"),
+        isSportFilterActive: shallowRef(false),
+      });
+
+      mockUseSportFilter.mockReturnValue({
+        sportFilterOptions: shallowRef([
+          { value: "all", label: "All sports" },
+          { value: "soccer", label: "Soccer" },
+        ]),
+        selectedSport: shallowRef("all"),
+        isSportFilterActive: shallowRef(false),
+        visibleItems: shallowRef([
           {
             idLeague: "1",
-            strLeague: "Premier League",
+            strLeague: "Premier League 1",
             strSport: "Soccer",
             strLeagueAlternate: "EPL",
             imageSrc: "/main.jpg",
           },
-        ]),
-        sportLeagueGroups: shallowRef([
           {
-            sport: "Soccer",
-            items: [
-              {
-                idLeague: "2",
-                strLeague: "La Liga",
-                strSport: "Soccer",
-                strLeagueAlternate: "Primera Division",
-                imageSrc: "/sport.jpg",
-              },
-            ],
+            idLeague: "11",
+            strLeague: "Premier League 2",
+            strSport: "Soccer",
+            strLeagueAlternate: "EPL 2",
+            imageSrc: "/main-2.jpg",
+          },
+          {
+            idLeague: "12",
+            strLeague: "Serie A",
+            strSport: "Soccer",
+            strLeagueAlternate: "ITA",
+            imageSrc: "/main-3.jpg",
+          },
+          {
+            idLeague: "2",
+            strLeague: "La Liga",
+            strSport: "Soccer",
+            strLeagueAlternate: "Primera Division",
+            imageSrc: "/sport.jpg",
           },
         ]),
+        setSelectedSport: vi.fn(),
       });
 
       render(LeaguesCatalog);
 
       const sportRail = within(document.body).getByLabelText("Soccer horizontal rail");
       expect(within(sportRail).getByText("La Liga")).toBeTruthy();
-      expect(within(sportRail).getByText("Soccer")).toBeTruthy();
+      expect(within(sportRail).getAllByText("Soccer").length).toBeGreaterThan(0);
       expect(within(sportRail).getByText("Primera Division")).toBeTruthy();
     });
 
@@ -118,6 +179,12 @@ describe("LeaguesCatalog", () => {
           },
         ]),
         sportLeagueGroups: shallowRef([]),
+        sportFilterOptions: shallowRef([
+          { value: "all", label: "All sports" },
+          { value: "soccer", label: "Soccer" },
+        ]),
+        selectedSport: shallowRef("all"),
+        isSportFilterActive: shallowRef(false),
       });
 
       render(LeaguesCatalog);
@@ -162,6 +229,12 @@ describe("LeaguesCatalog", () => {
           },
         ]),
         sportLeagueGroups: shallowRef([]),
+        sportFilterOptions: shallowRef([
+          { value: "all", label: "All sports" },
+          { value: "soccer", label: "Soccer" },
+        ]),
+        selectedSport: shallowRef("all"),
+        isSportFilterActive: shallowRef(false),
       });
 
       render(LeaguesCatalog);
@@ -172,6 +245,28 @@ describe("LeaguesCatalog", () => {
       expect(mainRailScroller).toBeTruthy();
       expect(within(mainRailScroller!).getByText("Tennis")).toBeTruthy();
       expect(within(mainRailScroller!).getByText("Alternate MRL")).toBeTruthy();
+    });
+
+    it("renders the sport filter dropdown in the header", () => {
+      mockUseLeaguesCatalogDataViewModel.mockReturnValue({
+        leaguesQuery: {
+          isLoading: shallowRef(false),
+          isError: shallowRef(false),
+          refetch: vi.fn(),
+        },
+        heroItem: shallowRef(null),
+        heroImageSrc: "/hero.jpg",
+        leagueItems: shallowRef([]),
+        visibleLeagueItems: shallowRef([]),
+        sportLeagueGroups: shallowRef([]),
+        sportFilterOptions: shallowRef([{ value: "all", label: "All sports" }]),
+        selectedSport: shallowRef("all"),
+        isSportFilterActive: shallowRef(false),
+      });
+
+      render(LeaguesCatalog);
+
+      expect(within(document.body).getAllByText("All sports").length).toBeGreaterThan(0);
     });
 
     it("shows a loading skeleton when leagues are fetching", () => {
@@ -186,6 +281,12 @@ describe("LeaguesCatalog", () => {
         leagueItems: shallowRef([]),
         visibleLeagueItems: shallowRef([]),
         sportLeagueGroups: shallowRef([]),
+        sportFilterOptions: shallowRef([
+          { value: "all", label: "All sports" },
+          { value: "soccer", label: "Soccer" },
+        ]),
+        selectedSport: shallowRef("all"),
+        isSportFilterActive: shallowRef(false),
       });
 
       render(LeaguesCatalog);
@@ -206,6 +307,12 @@ describe("LeaguesCatalog", () => {
         leagueItems: shallowRef([]),
         visibleLeagueItems: shallowRef([]),
         sportLeagueGroups: shallowRef([]),
+        sportFilterOptions: shallowRef([
+          { value: "all", label: "All sports" },
+          { value: "soccer", label: "Soccer" },
+        ]),
+        selectedSport: shallowRef("all"),
+        isSportFilterActive: shallowRef(false),
       });
 
       render(LeaguesCatalog);
@@ -226,11 +333,19 @@ describe("LeaguesCatalog", () => {
         leagueItems: shallowRef([]),
         visibleLeagueItems: shallowRef([]),
         sportLeagueGroups: shallowRef([]),
+        sportFilterOptions: shallowRef([
+          { value: "all", label: "All sports" },
+          { value: "soccer", label: "Soccer" },
+        ]),
+        selectedSport: shallowRef("all"),
+        isSportFilterActive: shallowRef(false),
       });
 
       render(LeaguesCatalog);
 
-      expect(within(document.body).getByText("No leagues were returned by the API.")).toBeTruthy();
+      expect(
+        within(document.body).getAllByText("No leagues were returned by the API.").length,
+      ).toBeGreaterThan(0);
     });
 
     it("shows stale-error banner above catalog when refresh fails but cached leagues exist", () => {
@@ -267,6 +382,12 @@ describe("LeaguesCatalog", () => {
           },
         ]),
         sportLeagueGroups: shallowRef([]),
+        sportFilterOptions: shallowRef([
+          { value: "all", label: "All sports" },
+          { value: "soccer", label: "Soccer" },
+        ]),
+        selectedSport: shallowRef("all"),
+        isSportFilterActive: shallowRef(false),
       });
 
       render(LeaguesCatalog);
@@ -275,6 +396,48 @@ describe("LeaguesCatalog", () => {
         within(document.body).getByText("Showing the last loaded leagues. Refresh failed."),
       ).toBeTruthy();
       expect(within(document.body).getAllByText("Cached League").length).toBeGreaterThanOrEqual(1);
+    });
+
+    it("shows designed empty state for active sport filter with reset action", () => {
+      mockUseLeaguesCatalogDataViewModel.mockReturnValue({
+        leaguesQuery: {
+          isLoading: shallowRef(false),
+          isError: shallowRef(false),
+          refetch: vi.fn(),
+        },
+        heroItem: shallowRef(null),
+        heroImageSrc: "/hero.jpg",
+        leagueItems: shallowRef([]),
+        visibleLeagueItems: shallowRef([]),
+        sportLeagueGroups: shallowRef([]),
+        sportFilterOptions: shallowRef([
+          { value: "all", label: "All sports" },
+          { value: "soccer", label: "Soccer" },
+        ]),
+        selectedSport: shallowRef("soccer"),
+        isSportFilterActive: shallowRef(true),
+      });
+
+      mockUseSportFilter.mockReturnValue({
+        sportFilterOptions: shallowRef([
+          { value: "all", label: "All sports" },
+          { value: "soccer", label: "Soccer" },
+        ]),
+        selectedSport: shallowRef("soccer"),
+        isSportFilterActive: shallowRef(true),
+        visibleItems: shallowRef([]),
+        setSelectedSport: vi.fn(),
+      });
+
+      render(LeaguesCatalog);
+
+      expect(within(document.body).getByText("No leagues match this sport filter")).toBeTruthy();
+      expect(
+        within(document.body).getByText(
+          "Try another sport, or reset the filter to browse every league.",
+        ),
+      ).toBeTruthy();
+      expect(within(document.body).getByRole("button", { name: "Show all sports" })).toBeTruthy();
     });
   });
 
@@ -313,6 +476,12 @@ describe("LeaguesCatalog", () => {
           },
         ]),
         sportLeagueGroups: shallowRef([]),
+        sportFilterOptions: shallowRef([
+          { value: "all", label: "All sports" },
+          { value: "soccer", label: "Soccer" },
+        ]),
+        selectedSport: shallowRef("all"),
+        isSportFilterActive: shallowRef(false),
       });
 
       render(LeaguesCatalog);
@@ -363,6 +532,12 @@ describe("LeaguesCatalog", () => {
           },
         ]),
         sportLeagueGroups: shallowRef([]),
+        sportFilterOptions: shallowRef([
+          { value: "all", label: "All sports" },
+          { value: "soccer", label: "Soccer" },
+        ]),
+        selectedSport: shallowRef("all"),
+        isSportFilterActive: shallowRef(false),
       });
 
       render(LeaguesCatalog);
@@ -394,6 +569,9 @@ describe("LeaguesCatalog", () => {
         leagueItems: shallowRef([]),
         visibleLeagueItems: shallowRef([]),
         sportLeagueGroups: shallowRef([]),
+        sportFilterOptions: shallowRef([{ value: "all", label: "All sports" }]),
+        selectedSport: shallowRef("all"),
+        isSportFilterActive: shallowRef(false),
       });
 
       render(LeaguesCatalog);
@@ -415,6 +593,9 @@ describe("LeaguesCatalog", () => {
         leagueItems: shallowRef([]),
         visibleLeagueItems: shallowRef([]),
         sportLeagueGroups: shallowRef([]),
+        sportFilterOptions: shallowRef([{ value: "all", label: "All sports" }]),
+        selectedSport: shallowRef("all"),
+        isSportFilterActive: shallowRef(false),
       });
 
       render(LeaguesCatalog);

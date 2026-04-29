@@ -22,17 +22,13 @@
 - Keep root/view components focused on composition; move feature logic to components/composables.
 - Prefer explicit, typed props/emits contracts.
 
-## ViewModel Layering (Vue)
+## DataViewModel (Vue)
 
-- For non-trivial UI features, organize feature logic into focused composable ViewModels:
-  - `use<Feature>DataViewModel`: server/query state + domain-to-UI mapping.
-  - `use<Feature>ScreenViewModel`: screen-level interaction state (open/close, global shortcuts, mode toggles).
-  - `use<Feature>OverlayViewModel` (optional): overlay/dialog local interaction state (focus lifecycle, local filters, clear/reset).
-  - `use<Feature>PresentationModel` (optional): pure mappers for UI-safe display fields (fallback labels, alt text, formatted strings).
-- Keep `.vue` components primarily declarative: rendering, event wiring, and accessibility markup.
-- Prefer derived state in ViewModels (`computed`) and keep side effects localized (watchers/listeners near the owning ViewModel).
-- Name outputs by intent (`mainRailItems`, `sportRails`, `isSearchModeOpen`) rather than generic names (`items`, `state`).
-- Avoid compatibility aliases once migration is complete; keep one canonical contract per feature.
+- Use `use<Feature>DataViewModel` as the primary composable pattern for feature state and domain-to-UI mapping.
+- Keep `.vue` components focused on rendering, event wiring, and accessibility markup.
+- Prefer derived state in DataViewModels (`computed`) and keep side effects localized near the owning DataViewModel.
+- Name outputs by intent (`mainRailItems`, `sportRails`, `isSearchOpen`) rather than generic names (`items`, `state`).
+- Keep one canonical contract per feature; avoid compatibility aliases after migration.
 
 ## Imports
 

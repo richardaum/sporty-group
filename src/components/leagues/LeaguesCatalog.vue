@@ -1,24 +1,35 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import UIRailTrack from "@/components/ui/rail/UIRailTrack.vue";
 import UITypography from "@/components/ui/UITypography.vue";
 import UIButton from "@/components/ui/UIButton.vue";
+import UISelect from "@/components/ui/UISelect.vue";
+import UIEmptyState from "@/components/ui/UIEmptyState.vue";
 import UIHero from "@/components/ui/UIHero.vue";
 import LeagueCard from "@/components/leagues/LeagueCard.vue";
 import LeaguesCatalogSkeleton from "@/components/leagues/LeaguesCatalogSkeleton.vue";
 import LeaguesSearchOverlay from "@/components/leagues/LeaguesSearchOverlay.vue";
 import { useLeaguesCatalogDataViewModel } from "@/composables/useLeaguesCatalogDataViewModel";
-import { useLeaguesCatalogScreenViewModel } from "@/composables/useLeaguesCatalogScreenViewModel";
+import { useLeaguesSearchOverlay } from "@/composables/useLeaguesSearchOverlay";
+import { useSportFilter } from "@/composables/useSportFilter";
+import { toSportLeagueGroups } from "@/composables/useSportLeagueGroups";
 import { useHasScrolled } from "@/composables/useHasScrolled";
 import { PhMagnifyingGlass } from "@phosphor-icons/vue";
 
-const { leaguesQuery, heroItem, heroImageSrc, visibleLeagueItems, sportLeagueGroups } =
-  useLeaguesCatalogDataViewModel();
-const { isSearchModeOpen, openSearchOverlay, closeSearchOverlay } =
-  useLeaguesCatalogScreenViewModel();
+const { leaguesQuery, heroImageSrc, leagueItems } = useLeaguesCatalogDataViewModel();
+const { isSearchOverlayOpen, openSearchOverlay, closeSearchOverlay } = useLeaguesSearchOverlay();
+const { sportFilterOptions, selectedSport, isSportFilterActive, visibleItems } =
+  useSportFilter(leagueItems);
 
-type LeagueItem = (typeof visibleLeagueItems.value)[number];
+type LeagueItem = (typeof leagueItems.value)[number];
 
 const { hasScrolled } = useHasScrolled();
+
+const visibleLeagueItems = computed(() => visibleItems.value);
+const heroItem = computed(() =>
+  isSportFilterActive.value ? null : (visibleLeagueItems.value[0] ?? null),
+);
+const sportLeagueGroups = computed(() => toSportLeagueGroups(visibleLeagueItems.value));
 
 function asLeagueItem(item: unknown): LeagueItem {
   return item as LeagueItem;
@@ -35,6 +46,10 @@ function getSportLeagueKey(sport: string, item: unknown): string {
 function getHeroDescription(item: LeagueItem): string {
   return `${item.strSport} league catalog from TheSportsDB. Alternate title: ${item.strLeagueAlternate}.`;
 }
+
+function resetSportFilter() {
+  selectedSport.value = "all";
+}
 </script>
 
 <template>
@@ -44,6 +59,15 @@ function getHeroDescription(item: LeagueItem): string {
         <div>
           <UITypography as="p" variant="titleSm" class="brand-mark">SportBet</UITypography>
         </div>
+        <UISelect
+          id="sport-filter"
+          v-model="selectedSport"
+          class="sport-filter"
+          placeholder="All sports"
+          :options="sportFilterOptions"
+          context="header"
+          dropdown-direction="bottom"
+        />
         <UIButton
           variant="surface"
           class="search-overlay-trigger"
@@ -126,13 +150,21 @@ function getHeroDescription(item: LeagueItem): string {
         </button>
       </section>
 
+      <UIEmptyState
+        v-else-if="isSportFilterActive"
+        title="No leagues match this sport filter"
+        description="Try another sport, or reset the filter to browse every league."
+        action-label="Show all sports"
+        @action="resetSportFilter"
+      />
+
       <p v-else class="status" role="status" aria-live="polite">
         No leagues were returned by the API.
       </p>
     </main>
 
     <LeaguesSearchOverlay
-      :is-open="isSearchModeOpen"
+      :is-open="isSearchOverlayOpen"
       :items="visibleLeagueItems"
       @close-search="closeSearchOverlay"
     />
@@ -181,6 +213,10 @@ function getHeroDescription(item: LeagueItem): string {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
+}
+
+.sport-filter {
+  width: min(20rem, 100%);
 }
 
 .search-overlay-trigger {
@@ -258,5 +294,8 @@ function getHeroDescription(item: LeagueItem): string {
 }
 
 @media (min-width: 48rem) {
+  .sport-filter {
+    margin-left: auto;
+  }
 }
 </style>
