@@ -2,8 +2,8 @@
 import UIRailTrack from "@/components/ui/rail/UIRailTrack.vue";
 import UITypography from "@/components/ui/UITypography.vue";
 import UIButton from "@/components/ui/UIButton.vue";
+import UIHero from "@/components/ui/UIHero.vue";
 import LeagueCard from "@/components/leagues/LeagueCard.vue";
-import Hero from "@/components/leagues/Hero.vue";
 import LeaguesCatalogSkeleton from "@/components/leagues/LeaguesCatalogSkeleton.vue";
 import LeaguesSearchOverlay from "@/components/leagues/LeaguesSearchOverlay.vue";
 import { useLeaguesCatalogDataViewModel } from "@/composables/useLeaguesCatalogDataViewModel";
@@ -31,6 +31,10 @@ function getLeagueKey(item: unknown): string {
 function getSportLeagueKey(sport: string, item: unknown): string {
   return `${sport}-${asLeagueItem(item).idLeague}`;
 }
+
+function getHeroDescription(item: LeagueItem): string {
+  return `${item.strSport} league catalog from TheSportsDB. Alternate title: ${item.strLeagueAlternate}.`;
+}
 </script>
 
 <template>
@@ -55,7 +59,13 @@ function getSportLeagueKey(sport: string, item: unknown): string {
     </header>
 
     <main class="app-main">
-      <Hero v-if="heroItem" :item="heroItem" :image-src="heroImageSrc" />
+      <UIHero
+        v-if="heroItem"
+        kicker="Sporty Group"
+        :title="heroItem.strLeague"
+        :description="getHeroDescription(heroItem)"
+        :image-src="heroImageSrc"
+      />
 
       <LeaguesCatalogSkeleton v-if="leaguesQuery.isLoading.value" />
 

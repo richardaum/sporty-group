@@ -1,28 +1,28 @@
 <script setup lang="ts">
 import UITypography from "@/components/ui/UITypography.vue";
-import type { LeagueListItem } from "@/api/sportsDb";
 
 defineOptions({
-  name: "LeagueHero",
+  name: "UIHero",
 });
 
-interface HeroProps {
-  item: LeagueListItem;
+interface UIHeroProps {
+  kicker?: string;
+  title: string;
+  description: string;
   imageSrc: string;
 }
 
-const props = defineProps<HeroProps>();
+const props = withDefaults(defineProps<UIHeroProps>(), {
+  kicker: "",
+});
 </script>
 
 <template>
   <section class="hero-panel" :style="{ backgroundImage: `url(${props.imageSrc})` }">
     <div class="hero-vignette">
-      <UITypography as="p" variant="kicker">Sporty Group</UITypography>
-      <UITypography as="h1" variant="title">{{ props.item.strLeague }}</UITypography>
-      <UITypography as="p" variant="muted">
-        {{ props.item.strSport }} league catalog from TheSportsDB. Alternate title:
-        {{ props.item.strLeagueAlternate }}.
-      </UITypography>
+      <UITypography v-if="props.kicker" as="p" variant="kicker">{{ props.kicker }}</UITypography>
+      <UITypography as="h1" variant="title">{{ props.title }}</UITypography>
+      <UITypography as="p" variant="muted">{{ props.description }}</UITypography>
     </div>
   </section>
 </template>
