@@ -34,6 +34,12 @@ export default [
     ...testingLibrary.configs["flat/vue"],
   },
   {
+    files: ["**/*.visual.spec.{js,jsx,ts,tsx}"],
+    rules: {
+      "testing-library/prefer-screen-queries": "off",
+    },
+  },
+  {
     files: ["src/**/*.{ts,tsx,vue}"],
     rules: {
       "no-restricted-imports": [
