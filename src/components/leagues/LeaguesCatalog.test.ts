@@ -569,6 +569,84 @@ describe("LeaguesCatalog", () => {
       expect(searchInput.value).toBe("prem");
     });
 
+    it("closes search and opens badge lookup when a search result row is clicked", async () => {
+      const selectLeague = vi.fn();
+      mockUseLeagueBadgeLookup.mockReturnValue({
+        selectedLeagueId: shallowRef(null),
+        selectedLeague: shallowRef(null),
+        badgesQuery: {
+          isLoading: shallowRef(false),
+          isError: shallowRef(false),
+        },
+        primaryBadge: shallowRef(null),
+        badgePreviewAssets: shallowRef([]),
+        badgePreviewAsset: shallowRef(null),
+        selectLeague,
+        clearSelectedLeague: vi.fn(),
+      });
+
+      mockUseLeaguesCatalogDataViewModel.mockReturnValue({
+        leaguesQuery: {
+          isLoading: shallowRef(false),
+          isError: shallowRef(false),
+          refetch: vi.fn(),
+        },
+        heroItem: shallowRef({
+          idLeague: "1",
+          strLeague: "Premier League",
+          strSport: "Soccer",
+          strLeagueAlternate: "EPL",
+          imageSrc: "/hero.jpg",
+        }),
+        heroImageSrc: "/hero.jpg",
+        leagueItems: shallowRef([
+          {
+            idLeague: "1",
+            strLeague: "Premier League",
+            strSport: "Soccer",
+            strLeagueAlternate: "EPL",
+            imageSrc: "/main.jpg",
+          },
+        ]),
+        visibleLeagueItems: shallowRef([
+          {
+            idLeague: "1",
+            strLeague: "Premier League",
+            strSport: "Soccer",
+            strLeagueAlternate: "EPL",
+            imageSrc: "/main.jpg",
+          },
+        ]),
+        sportLeagueGroups: shallowRef([]),
+        sportFilterOptions: shallowRef([
+          { value: "all", label: "All sports" },
+          { value: "soccer", label: "Soccer" },
+        ]),
+        selectedSport: shallowRef("all"),
+        isSportFilterActive: shallowRef(false),
+      });
+
+      render(LeaguesCatalog);
+
+      const [openButton] = within(document.body).getAllByRole("button", {
+        name: "Open league search",
+      });
+      await fireEvent.click(openButton);
+      const searchInput = within(document.body).getByLabelText("Search leagues");
+      await fireEvent.update(searchInput, "prem");
+
+      const resultsRegion = within(document.body).getByRole("region", { name: "Search results" });
+      await fireEvent.click(
+        within(resultsRegion).getByRole("button", { name: "Select Premier League" }),
+      );
+
+      expect(selectLeague).toHaveBeenCalledWith("1");
+      expect(within(document.body).queryByLabelText("Search leagues")).toBeNull();
+      expect(
+        within(document.body).getByRole("dialog", { name: "League badge lookup result" }),
+      ).toBeTruthy();
+    });
+
     it("clears the overlay query when Clear is clicked, restoring browsing from an empty query", async () => {
       mockUseLeaguesCatalogDataViewModel.mockReturnValue({
         leaguesQuery: {
